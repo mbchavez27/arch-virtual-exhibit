@@ -5,20 +5,16 @@ author: "Bantillo, Airon Matthew F.; Chavez, Max Benedict B.; Chiu, Kristopher L
 readingTime: "5 minute read"
 ---
 
-import bg from '../assets/exhibit-assets/bg.png';
+import '../styles/y2k38.css';
 import tvScreen from '../assets/exhibit-assets/tv screen.png';
 import logo from '../assets/exhibit-assets/y2k38_logo.png';
 
 <section class="hero">
-  <img src={bg.src} alt="" class="hero__bg" />
   <div class="hero__content">
-    <img src={tvScreen.src} alt="CRT TV frame" class="hero__tv" />
-    <div class="hero__overlay">
-      <p class="hero__pretitle">Witness and Unravel the</p>
-      <img src={logo.src} alt="Y2K38 Timeline" class="hero__logo" />
-      <p class="hero__desc">Every computer on Earth is counting down to a single second in 2038. Push the timeline forward to see what happens when the digital clock runs out of space.</p>
-      <a href="#start" class="hero__btn hero__btn--start">start</a>
-    </div>
+    <p class="hero__pretitle">Witness and Unravel the</p>
+    <img src={logo.src} alt="Y2K38 Timeline" class="hero__logo" />
+    <p class="hero__desc">Every computer on Earth is counting down to a single second in 2038. Push the timeline forward to see what happens when the digital clock runs out of space.</p>
+    <a href="#start" class="hero__btn hero__btn--start">start</a>
   </div>
 </section>
 
@@ -33,51 +29,27 @@ import logo from '../assets/exhibit-assets/y2k38_logo.png';
   .hero {
     position: relative;
     width: 100%;
-    min-height: 80vh;
+    min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
-    overflow: hidden;
-    margin-bottom: 2rem;
-  }
-
-  .hero__bg {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    z-index: 0;
+    background-image: url(${tvScreen.src});
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
   }
 
   .hero__content {
     position: relative;
     z-index: 1;
     display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    max-width: 900px;
-    padding: 2rem;
-  }
-
-  .hero__tv {
-    position: relative;
-    width: 100%;
-    max-width: 800px;
-    height: auto;
-    display: block;
-  }
-
-  .hero__overlay {
-    position: absolute;
-    inset: 0;
-    display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     text-align: center;
-    padding: 12% 15%;
+    padding: 2rem;
+    width: 100%;
+    max-width: 900px;
   }
 
   .hero__pretitle {
@@ -144,11 +116,8 @@ import logo from '../assets/exhibit-assets/y2k38_logo.png';
 
   @media (max-width: 640px) {
     .hero {
-      min-height: 60vh;
-    }
-
-    .hero__overlay {
-      padding: 15% 10%;
+      min-height: 80vh;
+      background-size: cover;
     }
   }
 `}</style>
