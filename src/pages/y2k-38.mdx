@@ -1,0 +1,154 @@
+---
+layout: '../layouts/ExhibitLayout.astro'
+title: "The Y2K & Y2K38 Bug"
+author: "Bantillo, Airon Matthew F.; Chavez, Max Benedict B.; Chiu, Kristopher Lance A.; Ponce, Jean Rondel R.; Santiago, Juan Ramon B."
+readingTime: "5 minute read"
+---
+
+import bg from '../assets/exhibit-assets/bg.png';
+import tvScreen from '../assets/exhibit-assets/tv screen.png';
+import logo from '../assets/exhibit-assets/y2k38_logo.png';
+
+<section class="hero">
+  <img src={bg.src} alt="" class="hero__bg" />
+  <div class="hero__content">
+    <img src={tvScreen.src} alt="CRT TV frame" class="hero__tv" />
+    <div class="hero__overlay">
+      <p class="hero__pretitle">Witness and Unravel the</p>
+      <img src={logo.src} alt="Y2K38 Timeline" class="hero__logo" />
+      <p class="hero__desc">Every computer on Earth is counting down to a single second in 2038. Push the timeline forward to see what happens when the digital clock runs out of space.</p>
+      <a href="#start" class="hero__btn hero__btn--start">start</a>
+    </div>
+  </div>
+</section>
+
+<section id="start" class="section">
+  <h2>Introduction</h2>
+  <p>Content coming soon...</p>
+</section>
+
+<style>{`
+  @import url('https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;700&display=swap');
+
+  .hero {
+    position: relative;
+    width: 100%;
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    margin-bottom: 2rem;
+  }
+
+  .hero__bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+  }
+
+  .hero__content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 900px;
+    padding: 2rem;
+  }
+
+  .hero__tv {
+    position: relative;
+    width: 100%;
+    max-width: 800px;
+    height: auto;
+    display: block;
+  }
+
+  .hero__overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 12% 15%;
+  }
+
+  .hero__pretitle {
+    font-family: 'Pixelify Sans', monospace;
+    font-size: clamp(0.8rem, 1.5vw, 1.1rem);
+    color: #c8b8e8;
+    margin: 0 0 0.25rem;
+    letter-spacing: 0.05em;
+    text-shadow: 1px 1px 0 #000;
+  }
+
+  .hero__logo {
+    width: 100%;
+    max-width: 600px;
+    height: auto;
+    margin-bottom: 0.75rem;
+    image-rendering: pixelated;
+  }
+
+  .hero__desc {
+    font-family: 'Pixelify Sans', monospace;
+    font-size: clamp(0.7rem, 1.2vw, 0.9rem);
+    color: #e0d4f5;
+    margin: 0 0 1.25rem;
+    max-width: 500px;
+    line-height: 1.5;
+    text-shadow: 1px 1px 0 #000;
+  }
+
+  .hero__btn {
+    display: inline-block;
+    padding: 0.6rem 2.5rem;
+    font-family: 'Pixelify Sans', monospace;
+    font-size: 1rem;
+    font-weight: 700;
+    text-transform: lowercase;
+    text-decoration: none;
+    border: 3px solid #000;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .hero__btn--start {
+    background: #f5c842;
+    color: #000;
+    box-shadow: 4px 4px 0 #000;
+  }
+
+  .hero__btn--start:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 #000;
+  }
+
+  .hero__btn--start:active {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0 #000;
+  }
+
+  .section {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  @media (max-width: 640px) {
+    .hero {
+      min-height: 60vh;
+    }
+
+    .hero__overlay {
+      padding: 15% 10%;
+    }
+  }
+`}</style>
