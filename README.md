@@ -4,6 +4,8 @@
 
 A virtual exhibit exploring the Y2K and Y2K38 bugs through interactive visualizations. Built with Astro and React.
 
+[Proposal Document (Google Docs)](https://docs.google.com/document/d/1KCnWIysS6aAWw4uJ-eVQevVSCrbUeSrRp5RZ-RqUPNM/edit?tab=t.0)
+
 ## Theme
 
 In the early age of computers, back in the 1960s to the 1980s, storage in computers was very limited and costly. To save space, several computer programmers stored only the last two digits of the year (e.g., 1971 is stored as `71`). At that time, however, many computer scientists had already identified an issue: when the year 2000 arrived, software that relied on operating on dates seemed to break, a bug known as the **Y2K (Year 2000) bug**.
@@ -72,7 +74,7 @@ At present, many scientists and developers are preparing for this through upgrad
 | Vibe | Space / Universal |
 | Art Style | Minimalist Flat Design with heavy use of Vector elements |
 
-![Color Palette](src/assets/Color_Palette.png)
+![Color Palette](src/assets/phase0-proposal/Color_Palette.png)
 
 ### Typography
 
@@ -99,22 +101,22 @@ At present, many scientists and developers are preparing for this through upgrad
 
 The proposed user interface was designed with the following low-fidelity mockups:
 
-![Begin Exploration](src/assets/Begin%20exploration%20-%20Low%20fidelity%20%5BDesktop%5D.png)
+![Begin Exploration](src/assets/phase0-proposal/Begin%20exploration%20-%20Low%20fidelity%20%5BDesktop%5D.png)
 *Begin Exploration — Entry point to the exhibit*
 
-![32-bit Timeline](src/assets/32-bit%20timeline%20-%20Low%20fidelity%20%5BDesktop%5D.png)
+![32-bit Timeline](src/assets/phase0-proposal/32-bit%20timeline%20-%20Low%20fidelity%20%5BDesktop%5D.png)
 *32-bit Timeline — Default timeline view*
 
-![32-bit Timeline Break](src/assets/32-bit%20timeline%20break%20-%20Low%20fidelity%20%5BDesktop%5D.png)
+![32-bit Timeline Break](src/assets/phase0-proposal/32-bit%20timeline%20break%20-%20Low%20fidelity%20%5BDesktop%5D.png)
 *32-bit Timeline Break — Overflow failure state*
 
-![32-bit Timeline End](src/assets/32-bit%20timeline%20_%20end%20Low%20fidelity%20%5BDesktop%5D.png)
+![32-bit Timeline End](src/assets/phase0-proposal/32-bit%20timeline%20_%20end%20Low%20fidelity%20%5BDesktop%5D.png)
 *32-bit Timeline End — Terminal overflow state*
 
-![64-bit Timeline](src/assets/64-bit%20timeline%20-%20Low%20fidelity%20%5BDesktop%5D.png)
+![64-bit Timeline](src/assets/phase0-proposal/64-bit%20timeline%20-%20Low%20fidelity%20%5BDesktop%5D.png)
 *64-bit Timeline — Post-upgrade resolved state*
 
-![Explore 64-bit Timeline](src/assets/Explore%20another%20timeline%20%2864-bit%29%20-%20Low%20fidelity%20%5BDesktop%5D.png)
+![Explore 64-bit Timeline](src/assets/phase0-proposal/Explore%20another%20timeline%20%2864-bit%29%20-%20Low%20fidelity%20%5BDesktop%5D.png)
 *Explore 64-bit Timeline — Branching alternative timeline*
 
 ## Project Structure
