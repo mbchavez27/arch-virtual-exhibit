@@ -1,5 +1,5 @@
 ---
-const START_UNSIGNED = 2147483640;
+const START_UNSIGNED = 2147483636;
 const OVERFLOW_UNSIGNED = 2147483648;
 const MAX_UNSIGNED = 2147483660;
 ---
@@ -30,11 +30,11 @@ const MAX_UNSIGNED = 2147483660;
 </div>
 
 <script>
-  const START_UNSIGNED = 2147483640;
+  const START_UNSIGNED = 2147483636;
   const OVERFLOW_UNSIGNED = 2147483648;
   const MAX_UNSIGNED = 2147483660;
   const GLITCH_DURATION = 5000;
-  const TEASER_TICKS = 3;
+  const TEASER_TICKS = 15;
 
   let unsignedEpoch = START_UNSIGNED;
   let playing = false;
@@ -42,6 +42,8 @@ const MAX_UNSIGNED = 2147483660;
   let speed = 1;
   let isGlitching = false;
   let glitchTriggered = false;
+  let wasPlayingBeforeGlitch = false;
+  let resumingFromGlitch = false;
 
   const utcEl = document.getElementById('utc-time')!;
   const pstEl = document.getElementById('pst-time')!;
@@ -92,7 +94,10 @@ const MAX_UNSIGNED = 2147483660;
     setTimeout(() => {
       container.classList.remove('y2k38-info--glitch');
       isGlitching = false;
-      startPlay();
+      if (wasPlayingBeforeGlitch) {
+        resumingFromGlitch = true;
+        startPlay();
+      }
     }, GLITCH_DURATION);
   }
 
@@ -114,6 +119,7 @@ const MAX_UNSIGNED = 2147483660;
     if (unsignedEpoch >= OVERFLOW_UNSIGNED) {
       container.classList.add('y2k38-info--overflow');
       if (!glitchTriggered) {
+        wasPlayingBeforeGlitch = playing;
         stopPlay();
         triggerGlitch();
       }
@@ -141,6 +147,12 @@ const MAX_UNSIGNED = 2147483660;
       unsignedEpoch = START_UNSIGNED;
       warningShown = false;
     }
+
+    if (unsignedEpoch === START_UNSIGNED && playing && !warningShown) {
+      showWarning();
+      warningShown = true;
+    }
+
     updateDisplay();
 
     // Trigger teaser glitch before overflow
@@ -155,10 +167,11 @@ const MAX_UNSIGNED = 2147483660;
     playing = true;
     playBtn.textContent = '◼ stop';
 
-    if (!warningShown) {
+    if (!warningShown && !resumingFromGlitch) {
       showWarning();
       warningShown = true;
     }
+    resumingFromGlitch = false;
 
     timer = setInterval(tick, 1000 / speed);
   }
