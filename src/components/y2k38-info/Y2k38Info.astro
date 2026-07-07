@@ -90,9 +90,11 @@ const MAX_UNSIGNED = 2147483660;
     isGlitching = true;
 
     container.classList.add('y2k38-info--glitch');
+    document.dispatchEvent(new CustomEvent('y2k38-glitch-start'));
 
     setTimeout(() => {
       container.classList.remove('y2k38-info--glitch');
+      document.dispatchEvent(new CustomEvent('y2k38-glitch-end'));
       isGlitching = false;
       if (wasPlayingBeforeGlitch) {
         resumingFromGlitch = true;
@@ -103,6 +105,7 @@ const MAX_UNSIGNED = 2147483660;
 
   function triggerTeaserGlitch() {
     container.classList.add('y2k38-info--teaser');
+    document.dispatchEvent(new CustomEvent('y2k38-teaser'));
     setTimeout(() => {
       container.classList.remove('y2k38-info--teaser');
     }, 150);
@@ -118,6 +121,7 @@ const MAX_UNSIGNED = 2147483660;
   function checkOverflow() {
     if (unsignedEpoch >= OVERFLOW_UNSIGNED) {
       container.classList.add('y2k38-info--overflow');
+      document.dispatchEvent(new CustomEvent('y2k38-overflow-start'));
       if (!glitchTriggered) {
         wasPlayingBeforeGlitch = playing;
         stopPlay();
@@ -125,6 +129,7 @@ const MAX_UNSIGNED = 2147483660;
       }
     } else {
       container.classList.remove('y2k38-info--overflow');
+      document.dispatchEvent(new CustomEvent('y2k38-overflow-end'));
       glitchTriggered = false;
     }
   }

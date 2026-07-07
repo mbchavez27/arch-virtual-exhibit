@@ -38,6 +38,11 @@ const events = [
       alt="Globe"
     />
 
+    <!-- Overflow text overlay -->
+    <div class="globe-carousel__overflow-text">
+      INTEGER OVERFLOW<br />DETECTED
+    </div>
+
     <!-- Orbit ring with events inside -->
     <div class="globe-carousel__orbit">
       {events.map((event, i) => (
@@ -138,6 +143,30 @@ const events = [
     document.addEventListener('keydown', (e) => {
       if (e.key === 'ArrowRight') next();
       if (e.key === 'ArrowLeft') prev();
+    });
+
+    // Glitch sync with Y2k38Info
+    document.addEventListener('y2k38-teaser', () => {
+      carousel.classList.add('globe-carousel--teaser');
+      setTimeout(() => {
+        carousel.classList.remove('globe-carousel--teaser');
+      }, 150);
+    });
+
+    document.addEventListener('y2k38-glitch-start', () => {
+      carousel.classList.add('globe-carousel--glitch');
+    });
+
+    document.addEventListener('y2k38-glitch-end', () => {
+      carousel.classList.remove('globe-carousel--glitch');
+    });
+
+    document.addEventListener('y2k38-overflow-start', () => {
+      carousel.classList.add('globe-carousel--overflow');
+    });
+
+    document.addEventListener('y2k38-overflow-end', () => {
+      carousel.classList.remove('globe-carousel--overflow');
     });
   })();
 </script>

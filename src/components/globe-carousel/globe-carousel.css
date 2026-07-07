@@ -88,6 +88,80 @@
 }
 
 /* ========================================
+   Glitch Animations
+   ======================================== */
+@keyframes globe-glitch {
+    0%   { transform: translate(0); filter: hue-rotate(0deg) brightness(1); }
+    10%  { transform: translate(-3px, 2px); filter: hue-rotate(90deg) brightness(1.3); }
+    20%  { transform: translate(3px, -2px); filter: hue-rotate(180deg) brightness(0.8); }
+    30%  { transform: translate(-2px, -3px); filter: hue-rotate(270deg) brightness(1.5); }
+    40%  { transform: translate(2px, 3px); filter: hue-rotate(360deg) brightness(1); }
+    50%  { transform: translate(-3px, 0); filter: hue-rotate(90deg) brightness(2); }
+    60%  { transform: translate(3px, 0); filter: hue-rotate(180deg) brightness(0.7); }
+    70%  { transform: translate(0, -3px); filter: hue-rotate(270deg) brightness(1.8); }
+    80%  { transform: translate(0, 3px); filter: hue-rotate(360deg) brightness(1.2); }
+    90%  { transform: translate(-2px, 2px); filter: hue-rotate(90deg) brightness(1.4); }
+    100% { transform: translate(0); filter: hue-rotate(0deg) brightness(1); }
+}
+
+@keyframes globe-glitch-teaser {
+    0%   { transform: translate(0); filter: hue-rotate(0deg); }
+    25%  { transform: translate(-2px, 1px); filter: hue-rotate(45deg) brightness(1.2); }
+    50%  { transform: translate(2px, -1px); filter: hue-rotate(90deg) brightness(1.4); }
+    75%  { transform: translate(-1px, -2px); filter: hue-rotate(135deg); }
+    100% { transform: translate(0); filter: hue-rotate(0deg); }
+}
+
+@keyframes globe-overflow-pulse {
+    0%   { filter: drop-shadow(0 0 15px rgba(0, 200, 255, 0.3)) brightness(1); }
+    50%  { filter: drop-shadow(0 0 25px rgba(255, 217, 74, 0.8)) brightness(1.3) saturate(1.5); }
+    100% { filter: drop-shadow(0 0 15px rgba(0, 200, 255, 0.3)) brightness(1); }
+}
+
+/* Teaser glitch state */
+.globe-carousel--teaser .globe-carousel__globe {
+    animation: globe-glitch-teaser 0.15s ease-out,
+               globe-float 3s ease-in-out infinite;
+}
+
+.globe-carousel--teaser .globe-carousel__event img {
+    animation: globe-glitch-teaser 0.15s ease-out;
+}
+
+/* Full glitch state */
+.globe-carousel--glitch .globe-carousel__globe {
+    animation: globe-glitch 0.3s infinite;
+    filter: drop-shadow(2px 0 rgba(0, 255, 255, 0.8)) drop-shadow(-2px 0 rgba(255, 0, 255, 0.8));
+}
+
+.globe-carousel--glitch .globe-carousel__orbit {
+    animation: globe-glitch 0.2s infinite;
+}
+
+.globe-carousel--glitch .globe-carousel__event img {
+    animation: globe-glitch 0.3s infinite;
+    filter: drop-shadow(1px 0 #00FFFF) drop-shadow(-1px 0 #FF00FF);
+}
+
+.globe-carousel--glitch .globe-carousel__label {
+    animation: globe-glitch 0.3s infinite;
+    color: #FF3333;
+    text-shadow: 2px 0 #00FFFF, -2px 0 #FF00FF;
+}
+
+.globe-carousel--glitch .globe-carousel__description {
+    animation: globe-glitch 0.3s infinite;
+    color: #FF6666;
+    text-shadow: 1px 0 #00FFFF, -1px 0 #FF00FF;
+}
+
+/* Overflow pulse state */
+.globe-carousel--overflow .globe-carousel__globe {
+    animation: globe-overflow-pulse 0.5s ease-out,
+               globe-float 3s ease-in-out infinite;
+}
+
+/* ========================================
    Orbit Ring (rotates, carries events)
    ======================================== */
 .globe-carousel__orbit {
@@ -199,6 +273,39 @@
     min-height: 1.5rem;
     max-width: 300px;
     transition: opacity 0.3s ease;
+}
+
+/* ========================================
+   Overflow Text Overlay
+   ======================================== */
+.globe-carousel__overflow-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 5;
+    font-family: 'Pixelify Sans', monospace;
+    font-size: clamp(0.9rem, 2.5vw, 1.4rem);
+    font-weight: 700;
+    color: #FF3333;
+    text-align: center;
+    line-height: 1.2;
+    text-shadow: 2px 0 #00FFFF, -2px 0 #FF00FF;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.1s ease;
+    white-space: nowrap;
+}
+
+.globe-carousel--glitch .globe-carousel__overflow-text {
+    opacity: 1;
+    animation: overflow-text-flicker 0.15s ease-in-out infinite alternate;
+}
+
+@keyframes overflow-text-flicker {
+    0%   { opacity: 0.8; text-shadow: 2px 0 #00FFFF, -2px 0 #FF00FF; }
+    50%  { opacity: 1;   text-shadow: -2px 0 #00FFFF, 2px 0 #FF00FF, 0 0 10px #FF3333; }
+    100% { opacity: 0.9; text-shadow: 1px 0 #00FFFF, -1px 0 #FF00FF; }
 }
 
 /* ========================================

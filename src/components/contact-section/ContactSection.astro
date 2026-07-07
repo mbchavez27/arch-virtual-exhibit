@@ -1,4 +1,6 @@
 ---
+import Navbar from "../navbar/Navbar.astro";
+
 interface Props {
   content?: string;
 }
@@ -7,6 +9,7 @@ const { content = "Coming soon..." } = Astro.props;
 ---
 
 <div class="contact-section">
+    <Navbar />
     <h2>Contact</h2>
     <p>{content}</p>
     <slot />
