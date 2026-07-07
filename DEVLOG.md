@@ -93,3 +93,32 @@ _Title page — Entry screen for the exhibit_
 ### Creative Decisions
 
 - Decided to add one exhibit page with the slug `/y2k-38`
+
+---
+
+## Phase 3: Building Title Page
+
+**Status:** Complete
+
+### Summary
+
+- Created TitlePage component with retro TV screen aesthetic
+- Implemented hero section with logo, description, and navigation buttons
+- Integrated component into y2k-38.mdx exhibit page
+- Applied custom CSS styling for background and typography
+
+### Aha Moments
+
+- Learned how to use the layouts of this template:
+  - Layouts provide page structure (header, footer, navigation)
+  - MDX files specify layout in frontmatter
+  - Components can be imported and composed within MDX
+  - Layout receives content via `<slot />` component
+
+### Challenges
+
+- Applying the custom design (retro TV screen aesthetic) to the existing layout structure
+
+### Creative Decisions
+
+- Applied the design by creating a separate TitlePage component and importing it into the MDX file, rather than modifying the layout itself
