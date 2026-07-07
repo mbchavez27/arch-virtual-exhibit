@@ -6,6 +6,17 @@
 
 ---
 
+## References:
+
+National Geographic Society. (n.d.). Y2K bug. National Geographic. Retrieved July 7, 2026, from https://education.nationalgeographic.org/resource/Y2K-bug/
+(Note: Educational entries that are continually updated and lack a publication date require a retrieval date in APA 7. Some archived versions of this page list specific contributing educators [e.g., Rutledge, K., et al.], but citing the National Geographic Society as the corporate author is standard for their encyclopedia entries).
+
+Inventive HQ. (2025, February 20). Y2038 bug: Will your systems crash on January 19, 2038? https://inventivehq.com/blog/year-2038-problem-explained
+
+Vartak, S. (2026, April 2). The year 2038 problem: The next “Y2K” waiting to happen? Medium. https://medium.com/@shubhamvartak01/the-year-2038-problem-the-next-y2k-waiting-to-happen-2ba3fdc72ea5
+
+---
+
 ## Phase 0: Proposal
 
 **Status:** Complete
