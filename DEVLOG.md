@@ -163,3 +163,33 @@ _Title page — Entry screen for the exhibit_
 - Designed three-tier glitch system: teaser glitch (pre-overflow), full glitch (at overflow), overflow pulse
 - Implemented warning text timing: showing warning on play-start and timeline loop
 - Applied visual design choices: CSS animations, colors, and pixel font styling for retro aesthetic
+
+---
+
+## Phase 5: Glitch Effects Expansion
+
+**Status:** Complete
+
+### Summary
+
+- Synchronized glitch effects across GlobeCarousel and Y2k38Info using custom events
+- Added teaser, full glitch, overflow, and negative aftermath states with CSS animations
+- Implemented "INTEGER OVERFLOW DETECTED" and "EPOCH CORRUPTED" text overlays
+
+### Aha Moments
+
+- Custom events enable real-time coordination between independent components
+- CSS filters and keyframe animations create convincing glitch aesthetics
+- Multi-state transitions require careful timing to feel organic
+
+### Challenges
+
+- Syncing glitch triggers across components without lag or visual glitches
+- Balancing visual intensity with usability during overflow states
+- Designing distinct yet cohesive effects for each glitch tier
+
+### Creative Decisions
+
+- Expanded to four-tier glitch system (teaser → full glitch → overflow → negative aftermath)
+- Used custom events for loose coupling between components
+- Applied CRT-style distortion via CSS filters and text shadows
