@@ -32,11 +32,14 @@ const MAX_UNSIGNED = 2147483660;
   const START_UNSIGNED = 2147483640;
   const OVERFLOW_UNSIGNED = 2147483648;
   const MAX_UNSIGNED = 2147483660;
+  const GLITCH_DURATION = 5000;
 
   let unsignedEpoch = START_UNSIGNED;
   let playing = false;
   let timer: ReturnType<typeof setInterval> | null = null;
   let speed = 1;
+  let isGlitching = false;
+  let glitchTriggered = false;
 
   const utcEl = document.getElementById('utc-time')!;
   const pstEl = document.getElementById('pst-time')!;
@@ -73,11 +76,30 @@ const MAX_UNSIGNED = 2147483660;
     return (unsigned >>> 0).toString(2).padStart(32, '0');
   }
 
+  function triggerGlitch() {
+    if (glitchTriggered) return;
+    glitchTriggered = true;
+    isGlitching = true;
+
+    container.classList.add('y2k38-info--glitch');
+
+    setTimeout(() => {
+      container.classList.remove('y2k38-info--glitch');
+      isGlitching = false;
+      startPlay();
+    }, GLITCH_DURATION);
+  }
+
   function checkOverflow() {
     if (unsignedEpoch >= OVERFLOW_UNSIGNED) {
       container.classList.add('y2k38-info--overflow');
+      if (!glitchTriggered) {
+        stopPlay();
+        triggerGlitch();
+      }
     } else {
       container.classList.remove('y2k38-info--overflow');
+      glitchTriggered = false;
     }
   }
 
@@ -102,6 +124,7 @@ const MAX_UNSIGNED = 2147483660;
   }
 
   function startPlay() {
+    if (isGlitching) return;
     playing = true;
     playBtn.textContent = '◼ stop';
     timer = setInterval(tick, 1000 / speed);
@@ -117,7 +140,7 @@ const MAX_UNSIGNED = 2147483660;
   }
 
   function restartTimer() {
-    if (playing) {
+    if (playing && !isGlitching) {
       clearInterval(timer!);
       timer = setInterval(tick, 1000 / speed);
     }
@@ -131,6 +154,7 @@ const MAX_UNSIGNED = 2147483660;
   }
 
   playBtn.addEventListener('click', () => {
+    if (isGlitching) return;
     if (playing) {
       stopPlay();
     } else {
@@ -201,6 +225,20 @@ const MAX_UNSIGNED = 2147483660;
     100% { color: #ffffff; transform: scale(1); }
   }
 
+  @keyframes glitch {
+    0%   { transform: translate(0); filter: hue-rotate(0deg); }
+    10%  { transform: translate(-3px, 2px); filter: hue-rotate(90deg); }
+    20%  { transform: translate(3px, -2px); filter: hue-rotate(180deg); }
+    30%  { transform: translate(-2px, -3px); filter: hue-rotate(270deg); }
+    40%  { transform: translate(2px, 3px); filter: hue-rotate(360deg); }
+    50%  { transform: translate(-3px, 0); filter: hue-rotate(90deg) brightness(1.5); }
+    60%  { transform: translate(3px, 0); filter: hue-rotate(180deg); }
+    70%  { transform: translate(0, -3px); filter: hue-rotate(270deg) brightness(2); }
+    80%  { transform: translate(0, 3px); filter: hue-rotate(360deg); }
+    90%  { transform: translate(-2px, 2px); filter: hue-rotate(90deg); }
+    100% { transform: translate(0); filter: hue-rotate(0deg); }
+  }
+
   .y2k38-info {
     display: flex;
     flex-direction: column;
@@ -213,9 +251,15 @@ const MAX_UNSIGNED = 2147483660;
     animation: overflow-pulse 0.5s ease-out;
   }
 
+  .y2k38-info--glitch .y2k38-info__line {
+    animation: glitch 0.3s infinite;
+    color: #FF3333;
+    text-shadow: 2px 0 #00FFFF, -2px 0 #FF00FF;
+  }
+
   .y2k38-info__line {
     font-family: 'Pixelify Sans', monospace;
-    font-size: clamp(0.7rem, 1.2vw, 0.9rem);
+    font-size: clamp(0.8rem, 1.4vw, 1rem);
     color: #ffffff;
     margin: 0;
     text-shadow: 1px 1px 0 #000;
