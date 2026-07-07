@@ -1,0 +1,23 @@
+---
+import Navbar from "../navbar/Navbar.astro";
+---
+
+<section class="home-section">
+    <Navbar />
+    <div class="home-section__content">
+        <slot />
+    </div>
+</section>
+
+<style>
+    .home-section {
+        width: 100%;
+        min-height: auto;
+    }
+
+    .home-section__content {
+        padding: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+</style>

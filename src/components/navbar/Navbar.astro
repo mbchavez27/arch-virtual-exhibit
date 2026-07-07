@@ -1,0 +1,115 @@
+---
+import logo from '../../assets/exhibit-assets/y2k38_logo.png';
+
+interface Link {
+  label: string;
+  href: string;
+}
+
+interface Props {
+  logoSrc?: string;
+  logoAlt?: string;
+  links?: Link[];
+}
+
+const {
+  logoSrc = logo.src,
+  logoAlt = 'Y2K38 Timeline',
+  links = [
+    { label: 'Home', href: '/' },
+    { label: 'About', href: '#about' },
+    { label: 'Explore', href: '#explore' },
+    { label: 'Contact', href: '#contact' },
+  ],
+} = Astro.props;
+---
+
+<nav class="navbar">
+  <a href="/" class="navbar__logo-link">
+    <img src={logoSrc} alt={logoAlt} class="navbar__logo" />
+  </a>
+  <ul class="navbar__links">
+    {links.map((link) => (
+      <li class="navbar__item">
+        <a href={link.href} class="navbar__link">{link.label}</a>
+      </li>
+    ))}
+  </ul>
+  <div class="navbar__spacer"></div>
+</nav>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;700&display=swap');
+
+  .navbar {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    width: 100%;
+    padding: 1rem 2rem;
+    background-color: transparent;
+    box-sizing: border-box;
+  }
+
+  .navbar__logo-link {
+    display: flex;
+    align-items: center;
+  }
+
+  .navbar__logo {
+    height: 40px;
+    width: auto;
+    image-rendering: pixelated;
+  }
+
+  .navbar__links {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .navbar__spacer {
+    width: 40px;
+  }
+
+  .navbar__link {
+    font-family: 'Pixelify Sans', monospace;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #ffffff;
+    text-decoration: none;
+    text-transform: lowercase;
+    letter-spacing: 0.05em;
+    transition: color 0.15s ease;
+  }
+
+  .navbar__link:hover {
+    color: #FFD94A;
+  }
+
+  @media (max-width: 640px) {
+    .navbar {
+      grid-template-columns: 1fr;
+      justify-items: center;
+      gap: 1rem;
+      padding: 1rem;
+    }
+
+    .navbar__links {
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .navbar__spacer {
+      display: none;
+    }
+
+    .navbar__link {
+      font-size: 0.9rem;
+    }
+  }
+</style>
