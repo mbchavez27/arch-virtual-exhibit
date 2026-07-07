@@ -15,19 +15,19 @@ const events = [
 ];
 ---
 
-<div class="globe-carousel" data-event-count={events.length}>
+<div class="globe-carousel globe-carousel--no-selection" data-event-count={events.length}>
   <!-- Progress dots -->
   <div class="globe-carousel__progress">
     {events.map((_, i) => (
       <div
-        class={`globe-carousel__dot ${i === 0 ? 'active' : ''}`}
+        class="globe-carousel__dot"
         data-index={i}
       />
     ))}
   </div>
 
   <!-- Event name -->
-  <div class="globe-carousel__label">{events[0].name}</div>
+  <div class="globe-carousel__label"></div>
 
   <!-- Stage: Globe + Orbiting Events -->
   <div class="globe-carousel__stage">
@@ -47,7 +47,7 @@ const events = [
     <div class="globe-carousel__orbit">
       {events.map((event, i) => (
         <div
-          class={`globe-carousel__event ${i === 0 ? 'active' : ''}`}
+          class="globe-carousel__event"
           style={`--i: ${i}; --event-count: ${events.length};`}
           data-index={i}
         >
@@ -66,7 +66,7 @@ const events = [
   </div>
 
   <!-- Event description -->
-  <div class="globe-carousel__description">{events[0].description}</div>
+  <div class="globe-carousel__description"></div>
 </div>
 
 <script>
@@ -75,7 +75,7 @@ const events = [
     if (!carousel) return;
 
     const eventCount = parseInt(carousel.dataset.eventCount || '5', 10);
-    let currentIndex = 0;
+    let currentIndex = -1;
 
     const dots = carousel.querySelectorAll('.globe-carousel__dot');
     const label = carousel.querySelector('.globe-carousel__label') as HTMLElement;
@@ -96,14 +96,22 @@ const events = [
     function updateCarousel(newIndex: number) {
       currentIndex = newIndex;
 
+      // Toggle no-selection class on container
+      carousel.classList.toggle('globe-carousel--no-selection', currentIndex === -1);
+
       // Update dots
       dots.forEach((dot, i) => {
         dot.classList.toggle('active', i === currentIndex);
       });
 
       // Update label + description
-      label.textContent = eventData[currentIndex]?.name || '';
-      description.textContent = eventData[currentIndex]?.description || '';
+      if (currentIndex === -1) {
+        label.textContent = '';
+        description.textContent = '';
+      } else {
+        label.textContent = eventData[currentIndex]?.name || '';
+        description.textContent = eventData[currentIndex]?.description || '';
+      }
 
       // Highlight active orbiting event
       events.forEach((evt, i) => {
@@ -131,11 +139,15 @@ const events = [
       });
     });
 
-    // Event click handlers — click orbiting event to navigate to it
+    // Event click handlers — click orbiting event to navigate to it (toggle if already active)
     events.forEach((evt) => {
       evt.addEventListener('click', () => {
         const index = parseInt(evt.getAttribute('data-index') || '0', 10);
-        updateCarousel(index);
+        if (index === currentIndex) {
+          updateCarousel(-1);
+        } else {
+          updateCarousel(index);
+        }
       });
     });
 
@@ -143,6 +155,15 @@ const events = [
     document.addEventListener('keydown', (e) => {
       if (e.key === 'ArrowRight') next();
       if (e.key === 'ArrowLeft') prev();
+      if (e.key === 'Escape') updateCarousel(-1);
+    });
+
+    // Click on stage (empty area) to deselect
+    const stage = carousel.querySelector('.globe-carousel__stage') as HTMLElement;
+    stage.addEventListener('click', (e) => {
+      if (e.target === stage || e.target === carousel.querySelector('.globe-carousel__globe')) {
+        updateCarousel(-1);
+      }
     });
 
     // Glitch sync with Y2k38Info

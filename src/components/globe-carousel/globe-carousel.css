@@ -16,6 +16,14 @@
 }
 
 /* ========================================
+   No Selection State
+   ======================================== */
+.globe-carousel--no-selection .globe-carousel__label,
+.globe-carousel--no-selection .globe-carousel__description {
+    opacity: 0;
+}
+
+/* ========================================
    Progress Indicator (Dots)
    ======================================== */
 .globe-carousel__progress {
