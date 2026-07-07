@@ -5,6 +5,7 @@ const MAX_UNSIGNED = 2147483660;
 ---
 
 <div class="y2k38-info">
+  <p id="warning" class="y2k38-info__warning hidden">⚠ WARNING: OVERFLOW INCOMING</p>
   <p class="y2k38-info__line"><strong>UTC Time:</strong> <span id="utc-time">--</span></p>
   <p class="y2k38-info__line"><strong>PST Time:</strong> <span id="pst-time">--</span></p>
   <p class="y2k38-info__line"><strong>Unix Epoch:</strong> <span id="unix-epoch">--</span> seconds</p>
@@ -33,6 +34,7 @@ const MAX_UNSIGNED = 2147483660;
   const OVERFLOW_UNSIGNED = 2147483648;
   const MAX_UNSIGNED = 2147483660;
   const GLITCH_DURATION = 5000;
+  const TEASER_TICKS = 3;
 
   let unsignedEpoch = START_UNSIGNED;
   let playing = false;
@@ -51,6 +53,10 @@ const MAX_UNSIGNED = 2147483660;
   const fill = document.getElementById('scrubber-fill')!;
   const thumb = document.getElementById('scrubber-thumb')!;
   const speedBtns = document.querySelectorAll('.y2k38-info__speed');
+  const warningEl = document.getElementById('warning')!;
+
+  let warningShown = false;
+  const WARNING_DURATION = 2000;
 
   function toSigned32(unsigned: number): number {
     if (unsigned > 2147483647) {
@@ -90,6 +96,20 @@ const MAX_UNSIGNED = 2147483660;
     }, GLITCH_DURATION);
   }
 
+  function triggerTeaserGlitch() {
+    container.classList.add('y2k38-info--teaser');
+    setTimeout(() => {
+      container.classList.remove('y2k38-info--teaser');
+    }, 150);
+  }
+
+  function showWarning() {
+    warningEl.classList.remove('hidden');
+    setTimeout(() => {
+      warningEl.classList.add('hidden');
+    }, WARNING_DURATION);
+  }
+
   function checkOverflow() {
     if (unsignedEpoch >= OVERFLOW_UNSIGNED) {
       container.classList.add('y2k38-info--overflow');
@@ -119,14 +139,27 @@ const MAX_UNSIGNED = 2147483660;
       unsignedEpoch++;
     } else {
       unsignedEpoch = START_UNSIGNED;
+      warningShown = false;
     }
     updateDisplay();
+
+    // Trigger teaser glitch before overflow
+    const ticksUntilOverflow = OVERFLOW_UNSIGNED - unsignedEpoch;
+    if (ticksUntilOverflow > 0 && ticksUntilOverflow <= TEASER_TICKS) {
+      triggerTeaserGlitch();
+    }
   }
 
   function startPlay() {
     if (isGlitching) return;
     playing = true;
     playBtn.textContent = '◼ stop';
+
+    if (!warningShown) {
+      showWarning();
+      warningShown = true;
+    }
+
     timer = setInterval(tick, 1000 / speed);
   }
 
@@ -239,6 +272,33 @@ const MAX_UNSIGNED = 2147483660;
     100% { transform: translate(0); filter: hue-rotate(0deg); }
   }
 
+  @keyframes glitch-teaser {
+    0%   { transform: translate(0); filter: hue-rotate(0deg); }
+    25%  { transform: translate(-2px, 1px); filter: hue-rotate(45deg); }
+    50%  { transform: translate(2px, -1px); filter: hue-rotate(90deg) brightness(1.3); }
+    75%  { transform: translate(-1px, -2px); filter: hue-rotate(135deg); }
+    100% { transform: translate(0); filter: hue-rotate(0deg); }
+  }
+
+  @keyframes warning-flash {
+    0%   { opacity: 1; }
+    50%  { opacity: 0.3; }
+    100% { opacity: 1; }
+  }
+
+  .y2k38-info__warning {
+    font-family: 'Pixelify Sans', monospace;
+    font-size: clamp(0.9rem, 1.6vw, 1.2rem);
+    color: #FF3333;
+    margin: 0 0 0.25rem;
+    text-shadow: 1px 0 #00FFFF, -1px 0 #FF00FF;
+    animation: warning-flash 0.3s ease-out 3;
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
   .y2k38-info {
     display: flex;
     flex-direction: column;
@@ -255,6 +315,12 @@ const MAX_UNSIGNED = 2147483660;
     animation: glitch 0.3s infinite;
     color: #FF3333;
     text-shadow: 2px 0 #00FFFF, -2px 0 #FF00FF;
+  }
+
+  .y2k38-info--teaser .y2k38-info__line {
+    animation: glitch-teaser 0.15s ease-out;
+    color: #FF6666;
+    text-shadow: 1px 0 #00FFFF, -1px 0 #FF00FF;
   }
 
   .y2k38-info__line {
