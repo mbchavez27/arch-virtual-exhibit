@@ -1,7 +1,7 @@
 ---
-const START_EPOCH = 2147483637;
-const OVERFLOW = 2147483647;
-const MAX_EPOCH = 2147483667;
+const START_UNSIGNED = 2147483640;
+const OVERFLOW_UNSIGNED = 2147483648;
+const MAX_UNSIGNED = 2147483660;
 ---
 
 <div class="y2k38-info">
@@ -29,11 +29,11 @@ const MAX_EPOCH = 2147483667;
 </div>
 
 <script>
-  const START_EPOCH = 2147483637;
-  const OVERFLOW = 2147483647;
-  const MAX_EPOCH = 2147483667;
+  const START_UNSIGNED = 2147483640;
+  const OVERFLOW_UNSIGNED = 2147483648;
+  const MAX_UNSIGNED = 2147483660;
 
-  let epoch = START_EPOCH;
+  let unsignedEpoch = START_UNSIGNED;
   let playing = false;
   let timer: ReturnType<typeof setInterval> | null = null;
   let speed = 1;
@@ -49,36 +49,32 @@ const MAX_EPOCH = 2147483667;
   const thumb = document.getElementById('scrubber-thumb')!;
   const speedBtns = document.querySelectorAll('.y2k38-info__speed');
 
+  function toSigned32(unsigned: number): number {
+    if (unsigned > 2147483647) {
+      return unsigned - 4294967296;
+    }
+    return unsigned;
+  }
+
   function getProgress(): number {
-    return ((epoch - START_EPOCH) / (MAX_EPOCH - START_EPOCH)) * 100;
+    return ((unsignedEpoch - START_UNSIGNED) / (MAX_UNSIGNED - START_UNSIGNED)) * 100;
   }
 
-  function getUTCTime(e: number): string {
-    if (e <= OVERFLOW) {
-      return new Date(e * 1000).toUTCString();
-    } else {
-      const base = new Date('1901-12-13T20:45:52Z').getTime();
-      return new Date(base + (e - OVERFLOW) * 1000).toUTCString();
-    }
+  function getUTCTime(signed: number): string {
+    return new Date(signed * 1000).toUTCString();
   }
 
-  function getPSTTime(e: number): string {
-    let utcMs: number;
-    if (e <= OVERFLOW) {
-      utcMs = e * 1000;
-    } else {
-      const base = new Date('1901-12-13T20:45:52Z').getTime();
-      utcMs = base + (e - OVERFLOW) * 1000;
-    }
+  function getPSTTime(signed: number): string {
+    const utcMs = signed * 1000;
     return new Date(utcMs - 8 * 60 * 60 * 1000).toUTCString();
   }
 
-  function getBinary(e: number): string {
-    return (e >>> 0).toString(2).padStart(32, '0');
+  function getBinary(unsigned: number): string {
+    return (unsigned >>> 0).toString(2).padStart(32, '0');
   }
 
   function checkOverflow() {
-    if (epoch === OVERFLOW) {
+    if (unsignedEpoch >= OVERFLOW_UNSIGNED) {
       container.classList.add('y2k38-info--overflow');
     } else {
       container.classList.remove('y2k38-info--overflow');
@@ -86,22 +82,23 @@ const MAX_EPOCH = 2147483667;
   }
 
   function updateDisplay() {
-    utcEl.textContent = getUTCTime(epoch);
-    pstEl.textContent = getPSTTime(epoch);
-    epochEl.textContent = epoch.toLocaleString();
-    binaryEl.textContent = getBinary(epoch);
+    const signed = toSigned32(unsignedEpoch);
+    utcEl.textContent = getUTCTime(signed);
+    pstEl.textContent = getPSTTime(signed);
+    epochEl.textContent = signed.toLocaleString();
+    binaryEl.textContent = getBinary(unsignedEpoch);
     fill.style.width = `${getProgress()}%`;
     thumb.style.left = `${getProgress()}%`;
     checkOverflow();
   }
 
   function tick() {
-    if (epoch < MAX_EPOCH) {
-      epoch++;
-      updateDisplay();
+    if (unsignedEpoch < MAX_UNSIGNED) {
+      unsignedEpoch++;
     } else {
-      stopPlay();
+      unsignedEpoch = START_UNSIGNED;
     }
+    updateDisplay();
   }
 
   function startPlay() {
@@ -129,7 +126,7 @@ const MAX_EPOCH = 2147483667;
   function setEpochFromPosition(clientX: number) {
     const rect = track.getBoundingClientRect();
     const percent = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
-    epoch = Math.round(START_EPOCH + percent * (MAX_EPOCH - START_EPOCH));
+    unsignedEpoch = Math.round(START_UNSIGNED + percent * (MAX_UNSIGNED - START_UNSIGNED));
     updateDisplay();
   }
 
@@ -192,7 +189,7 @@ const MAX_EPOCH = 2147483667;
     isDragging = false;
   });
 
-  updateDisplay();
+  startPlay();
 </script>
 
 <style>
