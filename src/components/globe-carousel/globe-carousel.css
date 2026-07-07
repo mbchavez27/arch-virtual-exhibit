@@ -92,6 +92,8 @@
    ======================================== */
 .globe-carousel__orbit {
     position: absolute;
+    top: 7.5%;
+    left: 7.5%;
     width: 85%;
     height: 85%;
     border: 1px dashed rgba(255, 255, 255, 0.15);
@@ -120,21 +122,13 @@
     margin-top: calc(clamp(40px, 10vw, 60px) / -2);
     margin-left: calc(clamp(40px, 10vw, 60px) / -2);
     transform: rotate(calc(360deg * var(--i) / var(--event-count)))
-                translateX(clamp(100px, 25vw, 150px));
-    animation: counter-rotate 25s linear infinite;
+                translateX(clamp(120px, 30vw, 175px));
     z-index: 3;
     cursor: pointer;
     transition: filter 0.2s ease;
 }
 
-.globe-carousel__orbit.paused .globe-carousel__event {
-    animation-play-state: paused;
-}
 
-@keyframes counter-rotate {
-    from { rotate: 0deg; }
-    to { rotate: -360deg; }
-}
 
 .globe-carousel__event img {
     width: 100%;
@@ -187,11 +181,11 @@
 }
 
 .globe-carousel__nav--prev {
-    left: 0;
+    left: 1rem;
 }
 
 .globe-carousel__nav--next {
-    right: 0;
+    right: 1rem;
 }
 
 /* ========================================
