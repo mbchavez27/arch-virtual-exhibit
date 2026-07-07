@@ -1,0 +1,157 @@
+---
+import globeImg from "../../assets/exhibit-assets/globe.png";
+import eventImg from "../../assets/exhibit-assets/event.png";
+import prevImg from "../../assets/exhibit-assets/move_backward.png";
+import nextImg from "../../assets/exhibit-assets/fast_forward.png";
+
+import "./globe-carousel.css";
+
+const events = [
+  { name: "Event 1", description: "Placeholder event description" },
+  { name: "Event 2", description: "Placeholder event description" },
+  { name: "Event 3", description: "Placeholder event description" },
+  { name: "Event 4", description: "Placeholder event description" },
+  { name: "Event 5", description: "Placeholder event description" },
+];
+---
+
+<div class="globe-carousel" data-event-count={events.length}>
+  <!-- Progress dots -->
+  <div class="globe-carousel__progress">
+    {events.map((_, i) => (
+      <div
+        class={`globe-carousel__dot ${i === 0 ? 'active' : ''}`}
+        data-index={i}
+      />
+    ))}
+  </div>
+
+  <!-- Event name -->
+  <div class="globe-carousel__label">{events[0].name}</div>
+
+  <!-- Stage: Globe + Orbiting Events -->
+  <div class="globe-carousel__stage">
+    <!-- Globe center -->
+    <img
+      class="globe-carousel__globe"
+      src={globeImg.src}
+      alt="Globe"
+    />
+
+    <!-- Orbit ring with events inside -->
+    <div class="globe-carousel__orbit">
+      {events.map((event, i) => (
+        <div
+          class={`globe-carousel__event ${i === 0 ? 'active' : ''}`}
+          style={`--i: ${i}; --event-count: ${events.length};`}
+          data-index={i}
+        >
+          <img src={eventImg.src} alt={event.name} />
+        </div>
+      ))}
+    </div>
+
+    <!-- Navigation arrows -->
+    <button class="globe-carousel__nav globe-carousel__nav--prev" aria-label="Previous event">
+      <img src={prevImg.src} alt="Previous" />
+    </button>
+    <button class="globe-carousel__nav globe-carousel__nav--next" aria-label="Next event">
+      <img src={nextImg.src} alt="Next" />
+    </button>
+  </div>
+
+  <!-- Event description -->
+  <div class="globe-carousel__description">{events[0].description}</div>
+</div>
+
+<script>
+  (function () {
+    const carousel = document.querySelector('.globe-carousel') as HTMLElement;
+    if (!carousel) return;
+
+    const eventCount = parseInt(carousel.dataset.eventCount || '5', 10);
+    let currentIndex = 0;
+    let resumeTimeout: ReturnType<typeof setTimeout> | null = null;
+
+    const dots = carousel.querySelectorAll('.globe-carousel__dot');
+    const label = carousel.querySelector('.globe-carousel__label') as HTMLElement;
+    const description = carousel.querySelector('.globe-carousel__description') as HTMLElement;
+    const orbit = carousel.querySelector('.globe-carousel__orbit') as HTMLElement;
+    const events = carousel.querySelectorAll('.globe-carousel__event');
+    const prevBtn = carousel.querySelector('.globe-carousel__nav--prev') as HTMLButtonElement;
+    const nextBtn = carousel.querySelector('.globe-carousel__nav--next') as HTMLButtonElement;
+
+    // Placeholder event data — swap in real content later
+    const eventData = [
+      { name: "Event 1", description: "Placeholder event description" },
+      { name: "Event 2", description: "Placeholder event description" },
+      { name: "Event 3", description: "Placeholder event description" },
+      { name: "Event 4", description: "Placeholder event description" },
+      { name: "Event 5", description: "Placeholder event description" },
+    ];
+
+    function updateCarousel(newIndex: number) {
+      currentIndex = newIndex;
+
+      // Update dots
+      dots.forEach((dot, i) => {
+        dot.classList.toggle('active', i === currentIndex);
+      });
+
+      // Update label + description
+      label.textContent = eventData[currentIndex]?.name || '';
+      description.textContent = eventData[currentIndex]?.description || '';
+
+      // Highlight active orbiting event
+      events.forEach((evt, i) => {
+        evt.classList.toggle('active', i === currentIndex);
+      });
+    }
+
+    function pauseOrbit() {
+      orbit.classList.add('paused');
+      if (resumeTimeout) clearTimeout(resumeTimeout);
+      resumeTimeout = setTimeout(() => {
+        orbit.classList.remove('paused');
+      }, 5000);
+    }
+
+    function next() {
+      pauseOrbit();
+      updateCarousel((currentIndex + 1) % eventCount);
+    }
+
+    function prev() {
+      pauseOrbit();
+      updateCarousel((currentIndex - 1 + eventCount) % eventCount);
+    }
+
+    // Button handlers
+    nextBtn.addEventListener('click', next);
+    prevBtn.addEventListener('click', prev);
+
+    // Dot click handlers
+    dots.forEach((dot) => {
+      dot.addEventListener('click', () => {
+        const index = parseInt(dot.getAttribute('data-index') || '0', 10);
+        pauseOrbit();
+        updateCarousel(index);
+      });
+    });
+
+    // Event click handlers — click orbiting event to navigate to it
+    events.forEach((evt) => {
+      evt.addEventListener('click', () => {
+        const index = parseInt(evt.getAttribute('data-index') || '0', 10);
+        pauseOrbit();
+        updateCarousel(index);
+      });
+    });
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') next();
+      if (e.key === 'ArrowLeft') prev();
+    });
+  })();
+</script>
