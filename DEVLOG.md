@@ -44,7 +44,7 @@ _Explore 64-bit Timeline — Branching alternative timeline_
 
 ## Phase 1: Wireframing & Content Creation
 
-**Status:** Pending
+**Status:** Complete
 
 ### Summary
 
@@ -58,15 +58,16 @@ _Title page — Entry screen for the exhibit_
 
 ### Aha Moments
 
-- [to be filled]
+- Discovered how the Y2K38 bug relates to class discussions on signed integer overflow
 
 ### Challenges
 
-- [to be filled]
+- Learning new front end technologies such as Astro, React, etc.
+- Deciding which specific content belongs in each page (e.g., Landing page, Timeline page, Failure states)
 
 ### Creative Decisions
 
-- [to be filled]
+- Decided to create wireframes using pixel art style in Figma
 
 ---
 
@@ -110,10 +111,10 @@ _Title page — Entry screen for the exhibit_
 ### Aha Moments
 
 - Learned how to use the layouts of this template:
-  - Layouts provide page structure (header, footer, navigation)
-  - MDX files specify layout in frontmatter
-  - Components can be imported and composed within MDX
-  - Layout receives content via `<slot />` component
+    - Layouts provide page structure (header, footer, navigation)
+    - MDX files specify layout in frontmatter
+    - Components can be imported and composed within MDX
+    - Layout receives content via `<slot />` component
 
 ### Challenges
 
@@ -122,3 +123,32 @@ _Title page — Entry screen for the exhibit_
 ### Creative Decisions
 
 - Applied the design by creating a separate TitlePage component and importing it into the MDX file, rather than modifying the layout itself
+
+---
+
+## Phase 4: Countdown & Overflow Effects
+
+**Status:** Complete
+
+### Summary
+
+- Implemented Unix epoch forward counter approaching the Y2K38 overflow boundary
+- Created interactive scrubber/timeline with play/stop and speed controls (1x, 2x, 4x, 8x)
+- Implemented 2's complement conversion for signed 32-bit integer display
+- Added three-tier glitch effect system (teaser, full glitch, overflow pulse)
+- Created warning text display with timed flash animation
+
+### Aha Moments
+
+- Learned how 2's complement works: unsigned values greater than 2^31-1 become negative via subtraction (subtracting 2^32)
+- Understood timer mechanics: how setInterval, speed controls, and scrubber interaction work together for smooth animation
+
+### Challenges
+
+- Timer synchronization: Issues with play/stop/speed controls and glitch pausing/resuming
+
+### Creative Decisions
+
+- Designed three-tier glitch system: teaser glitch (pre-overflow), full glitch (at overflow), overflow pulse
+- Implemented warning text timing: showing warning on play-start and timeline loop
+- Applied visual design choices: CSS animations, colors, and pixel font styling for retro aesthetic
