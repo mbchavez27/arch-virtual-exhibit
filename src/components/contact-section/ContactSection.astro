@@ -1,0 +1,19 @@
+---
+interface Props {
+  content?: string;
+}
+
+const { content = "Coming soon..." } = Astro.props;
+---
+
+<div class="contact-section">
+    <h2>Contact</h2>
+    <p>{content}</p>
+    <slot />
+</div>
+
+<style>
+    .contact-section {
+        padding: 2rem;
+    }
+</style>

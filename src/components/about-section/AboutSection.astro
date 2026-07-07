@@ -1,0 +1,19 @@
+---
+interface Props {
+  content?: string;
+}
+
+const { content = "Coming soon..." } = Astro.props;
+---
+
+<div class="about-section">
+    <h2>About</h2>
+    <p>{content}</p>
+    <slot />
+</div>
+
+<style>
+    .about-section {
+        padding: 2rem;
+    }
+</style>
