@@ -7,35 +7,5 @@ readingTime: "5 minute read"
 
 import "../styles/y2k38.css";
 import TitlePage from "../components/title-page/TitlePage.astro";
-import HomeSection from "../components/home-section/HomeSection.astro";
-import AboutSection from "../components/about-section/AboutSection.astro";
-import ExploreSection from "../components/explore-section/ExploreSection.astro";
-import ContactSection from "../components/contact-section/ContactSection.astro";
 
-<section id="title" class="section">
-    <TitlePage />
-</section>
-
-<section id="home" class="section">
-    <HomeSection />
-</section>
-
-<section id="about" class="section">
-    <AboutSection />
-</section>
-
-<section id="explore" class="section">
-    <ExploreSection />
-</section>
-
-<section id="contact" class="section">
-    <ContactSection />
-</section>
-
-<style>{`
-  .section {
-    max-width: 960px;
-    margin: 0 auto;
-    padding: 4rem 1.5rem;
-  }
-`}</style>
+<TitlePage />

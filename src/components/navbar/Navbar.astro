@@ -1,146 +1,141 @@
 ---
-import logo from '../../assets/exhibit-assets/y2k38_logo.png';
+import logo from "../../assets/exhibit-assets/y2k38_logo.png";
 
 interface Link {
-  label: string;
-  href: string;
+    label: string;
+    href: string;
 }
 
 interface Props {
-  logoSrc?: string;
-  logoAlt?: string;
-  links?: Link[];
+    logoSrc?: string;
+    logoAlt?: string;
+    links?: Link[];
 }
 
+const baseUrl = import.meta.env.BASE_URL;
+
 const {
-  logoSrc = logo.src,
-  logoAlt = 'Y2K38 Timeline',
-  links = [
-    { label: 'Home', href: '#home' },
-    { label: 'About', href: '#about' },
-    { label: 'Explore', href: '#explore' },
-    { label: 'Contact', href: '#contact' },
-  ],
+    logoSrc = logo.src,
+    logoAlt = "Y2K38 Timeline",
+    links = [
+        { label: "Home", href: `${baseUrl}/y2k-38/home/` },
+        { label: "About", href: `${baseUrl}/y2k-38/about/` },
+        { label: "Explore", href: `${baseUrl}/y2k-38/explore/` },
+        { label: "Contact", href: `${baseUrl}/y2k-38/contact/` },
+    ],
 } = Astro.props;
 ---
 
 <nav class="navbar">
-  <a href="#title" class="navbar__logo-link">
-    <img src={logoSrc} alt={logoAlt} class="navbar__logo" />
-  </a>
-  <ul class="navbar__links">
-    {links.map((link) => (
-      <li class="navbar__item">
-        <a href={link.href} class="navbar__link">{link.label}</a>
-      </li>
-    ))}
-  </ul>
-  <div class="navbar__spacer"></div>
+    <a href={`${baseUrl}/y2k-38/`} class="navbar__logo-link">
+        <img src={logoSrc} alt={logoAlt} class="navbar__logo" />
+    </a>
+    <ul class="navbar__links">
+        {
+            links.map((link) => (
+                <li class="navbar__item">
+                    <a href={link.href} class="navbar__link">
+                        {link.label}
+                    </a>
+                </li>
+            ))
+        }
+    </ul>
+    <div class="navbar__spacer"></div>
 </nav>
 
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const sections = document.querySelectorAll('section[id]');
-    const navLinks = document.querySelectorAll('.navbar__link');
+    document.addEventListener("DOMContentLoaded", () => {
+        const navLinks = document.querySelectorAll(".navbar__link");
+        const currentPath = window.location.pathname;
 
-    const getLinkId = (href: string) => {
-      if (href === '/') return 'home';
-      return href.replace('#', '');
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          const id = entry.target.getAttribute('id');
-          navLinks.forEach(link => {
-            const linkHref = link.getAttribute('href') || '';
-            const linkId = getLinkId(linkHref);
-            link.classList.toggle('navbar__link--active', linkId === id);
-          });
-        }
-      });
-    }, { threshold: 0.3 });
-
-    sections.forEach(section => observer.observe(section));
-  });
+        navLinks.forEach((link) => {
+            const href = link.getAttribute("href") || "";
+            const linkPath = new URL(href, window.location.origin).pathname;
+            link.classList.toggle(
+                "navbar__link--active",
+                currentPath === linkPath,
+            );
+        });
+    });
 </script>
 
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;700&display=swap');
+    @import url("https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;700&display=swap");
 
-  .navbar {
-    display: grid;
-    grid-template-columns: auto 1fr auto;
-    align-items: center;
-    width: 100%;
-    padding: 1.5rem 3rem;
-    background-color: transparent;
-    box-sizing: border-box;
-  }
-
-  .navbar__logo-link {
-    display: flex;
-    align-items: center;
-  }
-
-  .navbar__logo {
-    height: 60px;
-    width: auto;
-    image-rendering: pixelated;
-  }
-
-  .navbar__links {
-    display: flex;
-    justify-content: center;
-    gap: 2rem;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-
-  .navbar__spacer {
-    width: 60px;
-  }
-
-  .navbar__link {
-    font-family: 'Pixelify Sans', monospace;
-    font-size: 1.2rem;
-    font-weight: 700;
-    color: #ffffff;
-    text-decoration: none;
-    text-transform: lowercase;
-    letter-spacing: 0.05em;
-    transition: color 0.15s ease;
-  }
-
-  .navbar__link:hover {
-    color: #FFD94A;
-  }
-
-  .navbar__link--active {
-    color: #FFD94A;
-  }
-
-  @media (max-width: 640px) {
     .navbar {
-      grid-template-columns: 1fr;
-      justify-items: center;
-      gap: 1rem;
-      padding: 1.25rem;
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        align-items: center;
+        width: 100%;
+        padding: 1.5rem 3rem;
+        background-color: transparent;
+        box-sizing: border-box;
+    }
+
+    .navbar__logo-link {
+        display: flex;
+        align-items: center;
+    }
+
+    .navbar__logo {
+        height: 60px;
+        width: auto;
+        image-rendering: pixelated;
     }
 
     .navbar__links {
-      gap: 1.5rem;
-      flex-wrap: wrap;
-      justify-content: center;
+        display: flex;
+        justify-content: center;
+        gap: 2rem;
+        list-style: none;
+        margin: 0;
+        padding: 0;
     }
 
     .navbar__spacer {
-      display: none;
+        width: 60px;
     }
 
     .navbar__link {
-      font-size: 1rem;
+        font-family: "Pixelify Sans", monospace;
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: #ffffff;
+        text-decoration: none;
+        text-transform: lowercase;
+        letter-spacing: 0.05em;
+        transition: color 0.15s ease;
     }
-  }
+
+    .navbar__link:hover {
+        color: #ffd94a;
+    }
+
+    .navbar__link--active {
+        color: #ffd94a;
+    }
+
+    @media (max-width: 640px) {
+        .navbar {
+            grid-template-columns: 1fr;
+            justify-items: center;
+            gap: 1rem;
+            padding: 1.25rem;
+        }
+
+        .navbar__links {
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .navbar__spacer {
+            display: none;
+        }
+
+        .navbar__link {
+            font-size: 1rem;
+        }
+    }
 </style>
