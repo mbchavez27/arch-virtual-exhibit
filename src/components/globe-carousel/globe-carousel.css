@@ -101,9 +101,7 @@
     animation: orbit-spin 25s linear infinite;
 }
 
-.globe-carousel__orbit.paused {
-    animation-play-state: paused;
-}
+
 
 @keyframes orbit-spin {
     from { transform: rotate(0deg); }
@@ -135,16 +133,17 @@
     height: auto;
     image-rendering: pixelated;
     transition: filter 0.2s ease, transform 0.2s ease;
+    transform: rotate(calc(-360deg * var(--i) / var(--event-count)));
 }
 
 .globe-carousel__event:hover img {
     filter: brightness(1.5) drop-shadow(0 0 10px #FFD94A);
-    transform: scale(1.2);
+    transform: rotate(calc(-360deg * var(--i) / var(--event-count))) scale(1.2);
 }
 
 .globe-carousel__event.active img {
     filter: brightness(1.4) drop-shadow(0 0 8px #FFD94A);
-    transform: scale(1.3);
+    transform: rotate(calc(-360deg * var(--i) / var(--event-count))) scale(1.3);
 }
 
 /* ========================================
