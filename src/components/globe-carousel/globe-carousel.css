@@ -162,6 +162,86 @@
 }
 
 /* ========================================
+   Negative State (Post-Overflow Aftermath)
+   ======================================== */
+
+/* Globe - subtle desaturation */
+.globe-carousel--negative .globe-carousel__globe {
+    filter: saturate(0.6) brightness(0.9) drop-shadow(0 0 10px rgba(255, 51, 51, 0.3));
+    animation: negative-globe-pulse 3s ease-in-out infinite,
+               globe-float 3s ease-in-out infinite;
+}
+
+@keyframes negative-globe-pulse {
+    0% { filter: saturate(0.6) brightness(0.9) drop-shadow(0 0 10px rgba(255, 51, 51, 0.3)); }
+    50% { filter: saturate(0.6) brightness(0.95) drop-shadow(0 0 12px rgba(255, 51, 51, 0.4)); }
+    100% { filter: saturate(0.6) brightness(0.9) drop-shadow(0 0 10px rgba(255, 51, 51, 0.3)); }
+}
+
+/* Event images - subtle color shift */
+.globe-carousel--negative .globe-carousel__event img {
+    filter: saturate(0.7) hue-rotate(10deg) brightness(0.9);
+    transition: filter 0.5s ease;
+}
+
+.globe-carousel--negative .globe-carousel__event:hover img {
+    filter: saturate(0.8) hue-rotate(10deg) brightness(1);
+}
+
+.globe-carousel--negative .globe-carousel__event.active img {
+    filter: saturate(0.8) hue-rotate(10deg) brightness(1.1);
+}
+
+/* Event label - red tint */
+.globe-carousel--negative .globe-carousel__label {
+    color: #ff6666;
+    text-shadow: 1px 1px 0 #000, 0 0 5px rgba(255, 51, 51, 0.3);
+}
+
+/* Event description - slight desaturation */
+.globe-carousel--negative .globe-carousel__description {
+    color: #999;
+}
+
+/* Overflow text - change to "EPOCH CORRUPTED" */
+.globe-carousel--negative .globe-carousel__overflow-text {
+    opacity: 1;
+    animation: negative-text-flicker 2s ease-in-out infinite;
+}
+
+.globe-carousel--negative .globe-carousel__overflow-default {
+    display: none;
+}
+
+.globe-carousel--negative .globe-carousel__overflow-text::before {
+    content: "EPOCH\ACORRUPTED";
+    white-space: pre;
+    display: block;
+}
+
+@keyframes negative-text-flicker {
+    0% { opacity: 0.7; text-shadow: 2px 0 #00FFFF, -2px 0 #FF00FF; }
+    50% { opacity: 0.9; text-shadow: -2px 0 #00FFFF, 2px 0 #FF00FF, 0 0 8px #FF3333; }
+    100% { opacity: 0.7; text-shadow: 1px 0 #00FFFF, -1px 0 #FF00FF; }
+}
+
+/* Orbit ring - subtle color shift */
+.globe-carousel--negative .globe-carousel__orbit {
+    border-color: rgba(255, 102, 102, 0.2);
+}
+
+/* Progress dots - subtle red tint */
+.globe-carousel--negative .globe-carousel__dot {
+    background: #555;
+    border-color: #666;
+}
+
+.globe-carousel--negative .globe-carousel__dot.active {
+    background: #ff6666;
+    border-color: #ff6666;
+}
+
+/* ========================================
    Orbit Ring (rotates, carries events)
    ======================================== */
 .globe-carousel__orbit {
@@ -295,6 +375,10 @@
     pointer-events: none;
     transition: opacity 0.1s ease;
     white-space: nowrap;
+}
+
+.globe-carousel__overflow-default {
+    display: block;
 }
 
 .globe-carousel--glitch .globe-carousel__overflow-text {

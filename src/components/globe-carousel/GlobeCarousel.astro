@@ -40,7 +40,7 @@ const events = [
 
     <!-- Overflow text overlay -->
     <div class="globe-carousel__overflow-text">
-      INTEGER OVERFLOW<br />DETECTED
+      <span class="globe-carousel__overflow-default">INTEGER OVERFLOW<br />DETECTED</span>
     </div>
 
     <!-- Orbit ring with events inside -->
@@ -167,6 +167,14 @@ const events = [
 
     document.addEventListener('y2k38-overflow-end', () => {
       carousel.classList.remove('globe-carousel--overflow');
+    });
+
+    document.addEventListener('y2k38-negative-start', () => {
+      carousel.classList.add('globe-carousel--negative');
+    });
+
+    document.addEventListener('y2k38-negative-end', () => {
+      carousel.classList.remove('globe-carousel--negative');
     });
   })();
 </script>

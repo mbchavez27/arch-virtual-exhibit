@@ -6,6 +6,7 @@ const MAX_UNSIGNED = 2147483660;
 
 <div class="y2k38-info">
   <p id="warning" class="y2k38-info__warning hidden">⚠ WARNING: OVERFLOW INCOMING</p>
+  <p id="negative-indicator" class="y2k38-info__negative hidden">⚠ EPOCH: NEGATIVE — TIME CORRUPTED</p>
   <p class="y2k38-info__line"><strong>UTC Time:</strong> <span id="utc-time">--</span></p>
   <p class="y2k38-info__line"><strong>PST Time:</strong> <span id="pst-time">--</span></p>
   <p class="y2k38-info__line"><strong>Unix Epoch:</strong> <span id="unix-epoch">--</span> seconds</p>
@@ -56,8 +57,10 @@ const MAX_UNSIGNED = 2147483660;
   const thumb = document.getElementById('scrubber-thumb')!;
   const speedBtns = document.querySelectorAll('.y2k38-info__speed');
   const warningEl = document.getElementById('warning')!;
+  const negativeEl = document.getElementById('negative-indicator')!;
 
   let warningShown = false;
+  let isNegativeState = false;
   const WARNING_DURATION = 2000;
 
   function toSigned32(unsigned: number): number {
@@ -119,6 +122,8 @@ const MAX_UNSIGNED = 2147483660;
   }
 
   function checkOverflow() {
+    const signed = toSigned32(unsignedEpoch);
+    
     if (unsignedEpoch >= OVERFLOW_UNSIGNED) {
       container.classList.add('y2k38-info--overflow');
       document.dispatchEvent(new CustomEvent('y2k38-overflow-start'));
@@ -131,6 +136,23 @@ const MAX_UNSIGNED = 2147483660;
       container.classList.remove('y2k38-info--overflow');
       document.dispatchEvent(new CustomEvent('y2k38-overflow-end'));
       glitchTriggered = false;
+    }
+
+    // Handle negative state (aftermath)
+    if (signed < 0) {
+      if (!isNegativeState) {
+        isNegativeState = true;
+        container.classList.add('y2k38-info--negative');
+        negativeEl.classList.remove('hidden');
+        document.dispatchEvent(new CustomEvent('y2k38-negative-start'));
+      }
+    } else {
+      if (isNegativeState) {
+        isNegativeState = false;
+        container.classList.remove('y2k38-info--negative');
+        negativeEl.classList.add('hidden');
+        document.dispatchEvent(new CustomEvent('y2k38-negative-end'));
+      }
     }
   }
 
@@ -313,6 +335,21 @@ const MAX_UNSIGNED = 2147483660;
     animation: warning-flash 0.3s ease-out 3;
   }
 
+  .y2k38-info__negative {
+    font-family: 'Pixelify Sans', monospace;
+    font-size: clamp(0.8rem, 1.4vw, 1rem);
+    color: #ff6666;
+    margin: 0 0 0.25rem;
+    text-shadow: 1px 1px 0 #000;
+    animation: negative-pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes negative-pulse {
+    0% { text-shadow: 1px 1px 0 #000; }
+    50% { text-shadow: 1px 1px 0 #000, 0 0 8px rgba(255, 51, 51, 0.5); }
+    100% { text-shadow: 1px 1px 0 #000; }
+  }
+
   .hidden {
     display: none !important;
   }
@@ -327,6 +364,22 @@ const MAX_UNSIGNED = 2147483660;
 
   .y2k38-info--overflow .y2k38-info__line {
     animation: overflow-pulse 0.5s ease-out;
+  }
+
+  .y2k38-info--negative .y2k38-info__line {
+    color: #ddd;
+  }
+
+  .y2k38-info--negative #unix-epoch {
+    color: #ff6666;
+    text-decoration: line-through;
+    text-decoration-color: rgba(255, 102, 102, 0.6);
+  }
+
+  .y2k38-info--negative #utc-time,
+  .y2k38-info--negative #pst-time {
+    filter: saturate(0.7);
+    color: #ccc;
   }
 
   .y2k38-info--glitch .y2k38-info__line {
