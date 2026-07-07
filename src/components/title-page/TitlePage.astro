@@ -3,7 +3,7 @@ import tvScreen from "../../assets/exhibit-assets/tv_screen.png";
 import logo from "../../assets/exhibit-assets/y2k38_logo.png";
 ---
 
-<section class="hero">
+<section id="home" class="hero">
     <div class="hero__content">
         <span class="hero__pretitle">Witness and Unravel the</span>
         <img src={logo.src} alt="Y2K38 Timeline" class="hero__logo" />
@@ -13,7 +13,7 @@ import logo from "../../assets/exhibit-assets/y2k38_logo.png";
             runs out of space.
         </p>
         <div class="hero__btns">
-            <a href="#start" class="hero__btn hero__btn--start">start</a>
+            <a href="#home" class="hero__btn hero__btn--start">start</a>
             <a href={import.meta.env.BASE_URL} class="hero__btn hero__btn--quit"
                 >quit</a
             >

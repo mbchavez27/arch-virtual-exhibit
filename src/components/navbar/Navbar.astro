@@ -16,7 +16,7 @@ const {
   logoSrc = logo.src,
   logoAlt = 'Y2K38 Timeline',
   links = [
-    { label: 'Home', href: '/' },
+    { label: 'Home', href: '#home' },
     { label: 'About', href: '#about' },
     { label: 'Explore', href: '#explore' },
     { label: 'Contact', href: '#contact' },
@@ -37,6 +37,33 @@ const {
   </ul>
   <div class="navbar__spacer"></div>
 </nav>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('.navbar__link');
+
+    const getLinkId = (href: string) => {
+      if (href === '/') return 'home';
+      return href.replace('#', '');
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const id = entry.target.getAttribute('id');
+          navLinks.forEach(link => {
+            const linkHref = link.getAttribute('href') || '';
+            const linkId = getLinkId(linkHref);
+            link.classList.toggle('navbar__link--active', linkId === id);
+          });
+        }
+      });
+    }, { threshold: 0.3 });
+
+    sections.forEach(section => observer.observe(section));
+  });
+</script>
 
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;700&display=swap');
@@ -87,6 +114,10 @@ const {
   }
 
   .navbar__link:hover {
+    color: #FFD94A;
+  }
+
+  .navbar__link--active {
     color: #FFD94A;
   }
 
