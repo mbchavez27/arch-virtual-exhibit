@@ -1,0 +1,347 @@
+---
+const START_EPOCH = 2147483637;
+const OVERFLOW = 2147483647;
+const MAX_EPOCH = 2147483667;
+---
+
+<div class="y2k38-info">
+  <p class="y2k38-info__line"><strong>UTC Time:</strong> <span id="utc-time">--</span></p>
+  <p class="y2k38-info__line"><strong>PST Time:</strong> <span id="pst-time">--</span></p>
+  <p class="y2k38-info__line"><strong>Unix Epoch:</strong> <span id="unix-epoch">--</span> seconds</p>
+  <p class="y2k38-info__line"><strong>32-bit Binary:</strong> <span id="binary">--</span></p>
+
+  <div class="y2k38-info__controls">
+    <button id="play-btn" class="y2k38-info__btn">▶ play</button>
+    <div class="y2k38-info__speeds">
+      <button class="y2k38-info__speed active" data-speed="1">x1</button>
+      <button class="y2k38-info__speed" data-speed="2">x2</button>
+      <button class="y2k38-info__speed" data-speed="4">x4</button>
+      <button class="y2k38-info__speed" data-speed="8">x8</button>
+    </div>
+  </div>
+
+  <div class="y2k38-info__scrubber-container">
+    <div id="scrubber-track" class="y2k38-info__track">
+      <div id="scrubber-fill" class="y2k38-info__track-fill"></div>
+      <div id="scrubber-thumb" class="y2k38-info__thumb"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const START_EPOCH = 2147483637;
+  const OVERFLOW = 2147483647;
+  const MAX_EPOCH = 2147483667;
+
+  let epoch = START_EPOCH;
+  let playing = false;
+  let timer: ReturnType<typeof setInterval> | null = null;
+  let speed = 1;
+
+  const utcEl = document.getElementById('utc-time')!;
+  const pstEl = document.getElementById('pst-time')!;
+  const epochEl = document.getElementById('unix-epoch')!;
+  const binaryEl = document.getElementById('binary')!;
+  const playBtn = document.getElementById('play-btn')!;
+  const container = document.querySelector('.y2k38-info')!;
+  const track = document.getElementById('scrubber-track')!;
+  const fill = document.getElementById('scrubber-fill')!;
+  const thumb = document.getElementById('scrubber-thumb')!;
+  const speedBtns = document.querySelectorAll('.y2k38-info__speed');
+
+  function getProgress(): number {
+    return ((epoch - START_EPOCH) / (MAX_EPOCH - START_EPOCH)) * 100;
+  }
+
+  function getUTCTime(e: number): string {
+    if (e <= OVERFLOW) {
+      return new Date(e * 1000).toUTCString();
+    } else {
+      const base = new Date('1901-12-13T20:45:52Z').getTime();
+      return new Date(base + (e - OVERFLOW) * 1000).toUTCString();
+    }
+  }
+
+  function getPSTTime(e: number): string {
+    let utcMs: number;
+    if (e <= OVERFLOW) {
+      utcMs = e * 1000;
+    } else {
+      const base = new Date('1901-12-13T20:45:52Z').getTime();
+      utcMs = base + (e - OVERFLOW) * 1000;
+    }
+    return new Date(utcMs - 8 * 60 * 60 * 1000).toUTCString();
+  }
+
+  function getBinary(e: number): string {
+    return (e >>> 0).toString(2).padStart(32, '0');
+  }
+
+  function checkOverflow() {
+    if (epoch === OVERFLOW) {
+      container.classList.add('y2k38-info--overflow');
+    } else {
+      container.classList.remove('y2k38-info--overflow');
+    }
+  }
+
+  function updateDisplay() {
+    utcEl.textContent = getUTCTime(epoch);
+    pstEl.textContent = getPSTTime(epoch);
+    epochEl.textContent = epoch.toLocaleString();
+    binaryEl.textContent = getBinary(epoch);
+    fill.style.width = `${getProgress()}%`;
+    thumb.style.left = `${getProgress()}%`;
+    checkOverflow();
+  }
+
+  function tick() {
+    if (epoch < MAX_EPOCH) {
+      epoch++;
+      updateDisplay();
+    } else {
+      stopPlay();
+    }
+  }
+
+  function startPlay() {
+    playing = true;
+    playBtn.textContent = '◼ stop';
+    timer = setInterval(tick, 1000 / speed);
+  }
+
+  function stopPlay() {
+    playing = false;
+    playBtn.textContent = '▶ play';
+    if (timer) {
+      clearInterval(timer);
+      timer = null;
+    }
+  }
+
+  function restartTimer() {
+    if (playing) {
+      clearInterval(timer!);
+      timer = setInterval(tick, 1000 / speed);
+    }
+  }
+
+  function setEpochFromPosition(clientX: number) {
+    const rect = track.getBoundingClientRect();
+    const percent = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+    epoch = Math.round(START_EPOCH + percent * (MAX_EPOCH - START_EPOCH));
+    updateDisplay();
+  }
+
+  playBtn.addEventListener('click', () => {
+    if (playing) {
+      stopPlay();
+    } else {
+      startPlay();
+    }
+  });
+
+  speedBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      speedBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      speed = parseInt(btn.getAttribute('data-speed') || '1');
+      restartTimer();
+    });
+  });
+
+  let isDragging = false;
+
+  thumb.addEventListener('mousedown', (e) => {
+    isDragging = true;
+    e.preventDefault();
+  });
+
+  track.addEventListener('click', (e) => {
+    stopPlay();
+    setEpochFromPosition(e.clientX);
+  });
+
+  document.addEventListener('mousemove', (e) => {
+    if (isDragging) {
+      setEpochFromPosition(e.clientX);
+    }
+  });
+
+  document.addEventListener('mouseup', () => {
+    isDragging = false;
+  });
+
+  thumb.addEventListener('touchstart', (e) => {
+    isDragging = true;
+    e.preventDefault();
+  });
+
+  track.addEventListener('touchstart', (e) => {
+    stopPlay();
+    setEpochFromPosition(e.touches[0].clientX);
+  });
+
+  document.addEventListener('touchmove', (e) => {
+    if (isDragging) {
+      setEpochFromPosition(e.touches[0].clientX);
+    }
+  });
+
+  document.addEventListener('touchend', () => {
+    isDragging = false;
+  });
+
+  updateDisplay();
+</script>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;700&display=swap');
+
+  @keyframes overflow-pulse {
+    0%   { color: #ffffff; transform: scale(1); }
+    50%  { color: #FFD94A; transform: scale(1.05); }
+    100% { color: #ffffff; transform: scale(1); }
+  }
+
+  .y2k38-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    text-align: center;
+    align-items: center;
+  }
+
+  .y2k38-info--overflow .y2k38-info__line {
+    animation: overflow-pulse 0.5s ease-out;
+  }
+
+  .y2k38-info__line {
+    font-family: 'Pixelify Sans', monospace;
+    font-size: clamp(0.7rem, 1.2vw, 0.9rem);
+    color: #ffffff;
+    margin: 0;
+    text-shadow: 1px 1px 0 #000;
+    transition: color 0.2s ease;
+  }
+
+  .y2k38-info__line strong {
+    font-weight: 700;
+  }
+
+  .y2k38-info__controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .y2k38-info__btn {
+    font-family: 'Pixelify Sans', monospace;
+    font-size: 0.9rem;
+    padding: 0.4rem 1rem;
+    background: #FFD94A;
+    color: #000;
+    border: 2px solid #000;
+    cursor: pointer;
+    box-shadow: 2px 2px 0 #000;
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+  }
+
+  .y2k38-info__btn:hover {
+    transform: translate(-1px, -1px);
+    box-shadow: 3px 3px 0 #000;
+  }
+
+  .y2k38-info__btn:active {
+    transform: translate(1px, 1px);
+    box-shadow: 1px 1px 0 #000;
+  }
+
+  .y2k38-info__speeds {
+    display: flex;
+    gap: 0.25rem;
+  }
+
+  .y2k38-info__speed {
+    font-family: 'Pixelify Sans', monospace;
+    font-size: 0.8rem;
+    padding: 0.3rem 0.6rem;
+    background: #1a1a2e;
+    color: #ffffff;
+    border: 2px solid #444;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+
+  .y2k38-info__speed:hover {
+    border-color: #FFD94A;
+  }
+
+  .y2k38-info__speed.active {
+    background: #FFD94A;
+    color: #000;
+    border-color: #000;
+  }
+
+  .y2k38-info__scrubber-container {
+    width: 100%;
+    max-width: 400px;
+    margin-top: 0.75rem;
+  }
+
+  .y2k38-info__track {
+    position: relative;
+    width: 100%;
+    height: 12px;
+    background: #1a1a2e;
+    border: 2px solid #444;
+    cursor: pointer;
+  }
+
+  .y2k38-info__track-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background: #FFD94A;
+    width: 0%;
+    pointer-events: none;
+  }
+
+  .y2k38-info__thumb {
+    position: absolute;
+    top: 50%;
+    left: 0%;
+    width: 16px;
+    height: 16px;
+    background: #FFD94A;
+    border: 2px solid #000;
+    border-radius: 0;
+    transform: translate(-50%, -50%);
+    cursor: grab;
+    transition: transform 0.1s ease;
+    z-index: 1;
+  }
+
+  .y2k38-info__thumb:hover {
+    transform: translate(-50%, -50%) scale(1.2);
+  }
+
+  .y2k38-info__thumb:active {
+    cursor: grabbing;
+    transform: translate(-50%, -50%) scale(1.1);
+  }
+
+  @media (max-width: 640px) {
+    .y2k38-info__controls {
+      flex-direction: column;
+    }
+
+    .y2k38-info__scrubber-container {
+      max-width: 100%;
+    }
+  }
+</style>
