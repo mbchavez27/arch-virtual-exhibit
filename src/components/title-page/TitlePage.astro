@@ -1,18 +1,27 @@
 ---
-import corruptedTv from "../../assets/exhibit-assets/corrupted_tv.png";
+import tvScreen from "../../assets/exhibit-assets/tv_screen.png";
+import logo from "../../assets/exhibit-assets/y2k38_logo.png";
 import Navbar from "../navbar/Navbar.astro";
 ---
 
 <section id="home" class="hero">
     <Navbar />
     <div class="hero__content">
-        <img src={corruptedTv.src} alt="Corrupted TV" class="hero__tv" />
+        <span class="hero__pretitle">Witness and Unravel the</span>
+        <img src={logo.src} alt="Y2K38 Timeline" class="hero__logo" />
         <p class="hero__desc">
-            History is about to repeat itself in the digital world.
+            Every computer on Earth is counting down to a single second in 2038.
+            Push the timeline forward to see what happens when the digital clock
+            runs out of space.
         </p>
         <div class="hero__btns">
-            <a href="#next" class="hero__btn hero__btn--proceed">Proceed</a>
-            <span class="hero__arrow">&#9660;</span>
+            <a
+                href={`${import.meta.env.BASE_URL}/y2k-38/home/`}
+                class="hero__btn hero__btn--start">start</a
+            >
+            <a href={import.meta.env.BASE_URL} class="hero__btn hero__btn--quit"
+                >quit</a
+            >
         </div>
     </div>
 </section>
@@ -27,9 +36,6 @@ import Navbar from "../navbar/Navbar.astro";
         display: flex;
         align-items: center;
         justify-content: center;
-        background-image: url("../../assets/exhibit-assets/about_bg.png");
-        background-size: cover;
-        background-position: center;
     }
 
     .hero__content {
@@ -46,39 +52,51 @@ import Navbar from "../navbar/Navbar.astro";
         margin: 0 auto;
     }
 
-    .hero__tv {
+    .hero__pretitle {
+        font-family: "Pixelify Sans", monospace;
+        font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+        color: #6fd7f7;
+        margin: 0 0 0.5rem;
+        letter-spacing: 0.05em;
+    }
+
+    .hero__logo {
         width: 100%;
-        max-width: 400px;
+        max-width: 800px;
         height: auto;
+        margin-bottom: 0.5rem;
         image-rendering: pixelated;
-        margin-bottom: 2rem;
     }
 
     .hero__desc {
         font-family: "Pixelify Sans", monospace;
-        font-size: clamp(1rem, 2vw, 1.4rem);
-        color: #ffffff;
-        text-align: center;
-        max-width: 500px;
-        margin: 0 0 2rem;
+        font-size: clamp(0.9rem, 1.6vw, 1.2rem);
+        color: #e0d4f5;
+        margin: 0 0 1.5rem;
+        max-width: 650px;
         line-height: 1.5;
-        text-shadow: 2px 2px 0 #000;
+        text-shadow: 1px 1px 0 #000;
     }
 
     .hero__btns {
         display: flex;
         flex-direction: column;
-        gap: 0.75rem;
+        gap: 1.5rem;
         align-items: center;
+        width: 100%;
+        max-width: 160px;
     }
 
     .hero__btn {
         display: block;
+        width: 100%;
+        min-width: 100px;
         text-align: center;
-        padding: 0.6rem 2.25rem;
+        padding: 0.8rem 2.5rem;
         font-family: "Pixelify Sans", monospace;
-        font-size: 1.2rem;
+        font-size: 1.3rem;
         font-weight: 700;
+        text-transform: lowercase;
         text-decoration: none;
         border: 3px solid #000;
         cursor: pointer;
@@ -87,28 +105,36 @@ import Navbar from "../navbar/Navbar.astro";
             box-shadow 0.15s ease;
     }
 
-    .hero__btn--proceed {
+    .hero__btn--start {
         background: #ffd94a;
-        color: #000;
+        color: #fff;
         box-shadow: 4px 4px 0 #000;
     }
 
-    .hero__btn--proceed:hover {
+    .hero__btn--start:hover {
         transform: translate(-2px, -2px);
         box-shadow: 6px 6px 0 #000;
     }
 
-    .hero__btn--proceed:active {
+    .hero__btn--start:active {
         transform: translate(2px, 2px);
         box-shadow: 2px 2px 0 #000;
     }
 
-    .hero__arrow {
-        color: #ffd94a;
-        font-size: 1.5rem;
-        display: block;
-        text-align: center;
-        text-shadow: 2px 2px 0 #000;
+    .hero__btn--quit {
+        background: #b0b8c4;
+        color: #fff;
+        box-shadow: 4px 4px 0 #000;
+    }
+
+    .hero__btn--quit:hover {
+        transform: translate(-2px, -2px);
+        box-shadow: 6px 6px 0 #000;
+    }
+
+    .hero__btn--quit:active {
+        transform: translate(2px, 2px);
+        box-shadow: 2px 2px 0 #000;
     }
 
     .hero :global(.navbar) {
