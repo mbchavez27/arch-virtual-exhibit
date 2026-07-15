@@ -1,22 +1,120 @@
 ---
+import corruptedTv from "../../assets/exhibit-assets/corrupted_tv.png";
+import moveBackward from "../../assets/exhibit-assets/move_backward.png";
 import Navbar from "../navbar/Navbar.astro";
-
-interface Props {
-  content?: string;
-}
-
-const { content = "Coming soon..." } = Astro.props;
 ---
 
 <div class="about-section">
     <Navbar />
-    <h2>About</h2>
-    <p>{content}</p>
-    <slot />
+    <div class="history_component">
+        <img src={corruptedTv.src} alt="Corrupted TV" class="history_component__tv" />
+        <p class="history_component__desc">
+            History is about to repeat itself in the digital world.
+        </p>
+        <div class="history_component__btns">
+            <a href="#next" class="history_component__btn">Proceed</a>
+            <a href="#next" class="history_component__arrow-link">
+                <img src={moveBackward.src} alt="Down" class="history_component__arrow" />
+            </a>
+        </div>
+    </div>
 </div>
 
 <style>
+    @import url("https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;700&display=swap");
+
     .about-section {
-        padding: 2rem;
+        padding: 0;
+    }
+
+    .history_component {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 6rem 2rem;
+        width: 100%;
+        min-height: 80vh;
+    }
+
+    .history_component__tv {
+        position: relative;
+        z-index: 2;
+        width: 100%;
+        max-width: 600px;
+        height: auto;
+        image-rendering: pixelated;
+        margin-bottom: 3rem;
+        animation: tv-float 3s ease-in-out infinite, tv-glitch 4s steps(2) infinite;
+    }
+
+    @keyframes tv-float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-12px); }
+    }
+
+    @keyframes tv-glitch {
+        0%, 90%, 100% { filter: none; }
+        92% { filter: hue-rotate(90deg); transform: translate(3px, -12px); }
+        94% { filter: hue-rotate(-90deg); transform: translate(-3px, -10px); }
+        96% { filter: none; transform: translateY(-12px); }
+    }
+
+    .history_component__desc {
+        position: relative;
+        z-index: 2;
+        font-family: "Pixelify Sans", monospace;
+        font-size: clamp(1.4rem, 3vw, 2rem);
+        color: #ffffff;
+        max-width: 700px;
+        margin: 0 0 3rem;
+        line-height: 1.5;
+        text-shadow: 2px 2px 0 #000;
+    }
+
+    .history_component__btns {
+        position: relative;
+        z-index: 2;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        align-items: center;
+    }
+
+    .history_component__btn {
+        border: none;
+        background: transparent;
+        box-shadow: none;
+        color: #ffd94a;
+        padding: 0;
+        font-family: "Pixelify Sans", monospace;
+        font-size: 1.8rem;
+        font-weight: 700;
+        text-decoration: none;
+        cursor: pointer;
+        transition: opacity 0.15s ease;
+    }
+
+    .history_component__btn:hover {
+        opacity: 0.8;
+    }
+
+    .history_component__arrow-link {
+        display: block;
+        cursor: pointer;
+        transition: opacity 0.15s ease;
+    }
+
+    .history_component__arrow-link:hover {
+        opacity: 0.8;
+    }
+
+    .history_component__arrow {
+        width: 48px;
+        height: auto;
+        transform: rotate(-90deg);
+        image-rendering: pixelated;
     }
 </style>

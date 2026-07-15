@@ -14,7 +14,9 @@
 
 const { title = "CSARCH2 Virtual Exhibit", author } = Astro.props.frontmatter ?? Astro.props;
 
-const allExhibits = await Astro.glob('../pages/*.mdx');
+const allExhibits = Object.values(
+  import.meta.glob('../pages/*.mdx', { eager: true })
+);
 const exhibits = allExhibits.filter(exhibit => !exhibit.file.includes('index.mdx'));
 
 import 'normalize.css';
