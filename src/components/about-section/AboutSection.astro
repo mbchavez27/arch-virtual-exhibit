@@ -1,5 +1,7 @@
 ---
 import corruptedTv from "../../assets/exhibit-assets/corrupted_tv.png";
+import warningMail from "../../assets/exhibit-assets/warning_mail.png";
+import clock from "../../assets/exhibit-assets/clock.png";
 import moveBackward from "../../assets/exhibit-assets/move_backward.png";
 import Navbar from "../navbar/Navbar.astro";
 ---
@@ -12,11 +14,50 @@ import Navbar from "../navbar/Navbar.astro";
             History is about to repeat itself in the digital world.
         </p>
         <div class="history_component__btns">
-            <a href="#next" class="history_component__btn">Proceed</a>
-            <a href="#next" class="history_component__arrow-link">
+            <a href="#context" class="history_component__btn">Proceed</a>
+            <a href="#context" class="history_component__arrow-link">
                 <img src={moveBackward.src} alt="Down" class="history_component__arrow" />
             </a>
         </div>
+    </div>
+    <div class="context_component" id="context">
+        <img src={warningMail.src} alt="Warning" class="context_component__icon" />
+
+        <p class="context_component__text">
+            Decades ago, early computers faced the infamous "Y2K" bug because
+            they only used two digits to store years, causing massive panic that
+            the year 2000 would be misread as 1900 and break several systems
+            globally that depend on time tracking. While a massive global effort
+            fixed that issue, a remarkably similar problem is ticking away right
+            now: the Y2K38 bug.
+        </p>
+
+        <p class="context_component__text">
+            While a massive global effort fixed that issue, a remarkably similar
+            problem is ticking away right now: the Y2K38 bug. Many modern systems
+            track time by counting the exact seconds that have elapsed since
+            January 1, 1970, storing this data in a <span class="highlight--pink">limited
+            32-bit format</span>.
+        </p>
+
+        <p class="context_component__text">
+            On January 19, 2038, at <span class="highlight--pink">exactly 03:14:07 UTC</span>,
+            this digital counter will hit its <span class="highlight--red">absolute maximum
+            capacity</span> and overflow into negative numbers, tricking computers
+            into rolling back to the year 1901. Left unchecked, this data overflow
+            could trigger severe system malfunctions in everything from bank
+            calculations to critical software.
+        </p>
+
+        <img src={clock.src} alt="Clock" class="context_component__clock" />
+
+        <p class="context_component__text">
+            Fortunately, unlike the panic of the past, scientists and developers
+            are already quietly working behind the scenes to upgrade systems and
+            adopt 64-bit time tracking, ensuring our digital clock keeps ticking
+            smoothly into the future. Click below to explore the interactive
+            timeline and discover exactly how this impending digital reset unfolds.
+        </p>
     </div>
 </div>
 
@@ -116,5 +157,46 @@ import Navbar from "../navbar/Navbar.astro";
         height: auto;
         transform: rotate(-90deg);
         image-rendering: pixelated;
+    }
+
+    .context_component {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 8rem 2rem;
+        width: 100%;
+    }
+
+    .context_component__icon {
+        width: 100px;
+        height: auto;
+        image-rendering: pixelated;
+        margin-bottom: 3rem;
+    }
+
+    .context_component__text {
+        font-family: "Pixelify Sans", monospace;
+        font-size: clamp(1rem, 1.8vw, 1.3rem);
+        color: #ffffff;
+        max-width: 700px;
+        margin: 0 auto 2rem;
+        line-height: 1.8;
+        text-shadow: 1px 1px 0 #000;
+    }
+
+    .highlight--pink {
+        color: #FF00C8;
+    }
+
+    .highlight--red {
+        color: #ff4444;
+    }
+
+    .context_component__clock {
+        width: 160px;
+        height: auto;
+        image-rendering: pixelated;
+        margin: 3rem auto;
     }
 </style>
