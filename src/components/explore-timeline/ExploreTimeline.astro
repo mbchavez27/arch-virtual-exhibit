@@ -1,0 +1,149 @@
+---
+import logo from "../../assets/exhibit-assets/y2k38_logo.png";
+import earthSheet from "../../assets/earthspin-sheet.png";
+import mailUnread from "../../assets/stable_earth/mail_unread.png";
+import hourglassStable from "../../assets/stable_earth/timeglass_icon_stable.png";
+import hourglassCorrupted from "../../assets/corrupted_earth/timeglass_icon_corrupted.png";
+import skull from "../../assets/corrupted_earth/Skull.png";
+import glitch from "../../assets/corrupted_earth/glitch.png";
+import monitorCorrupted from "../../assets/corrupted_earth/monitor_corrupted.png";
+
+const baseUrl = import.meta.env.BASE_URL.endsWith("/")
+  ? import.meta.env.BASE_URL
+  : `${import.meta.env.BASE_URL}/`;
+const route = (path: string) => `${baseUrl}${path.replace(/^\//, "")}`;
+const markerSlots = ["north", "north-east", "east", "south-east", "south-west", "west", "center"];
+---
+
+<main
+  class="explore"
+  id="explore-app"
+  data-corrupted="false"
+  data-earth-sheet={earthSheet.src}
+>
+  <a class="skip-link" href="#timeline-controls">Skip to timeline controls</a>
+
+  <nav class="explore-nav" aria-label="Exhibit navigation">
+    <a class="explore-nav__logo" href={route("y2k-38/")} aria-label="Y2K38 timeline home">
+      <img src={logo.src} alt="Y2K38 Timeline" width="171" height="74" />
+    </a>
+    <ul class="explore-nav__links">
+      <li><a href={route("y2k-38/")}>Home</a></li>
+      <li><a href={route("y2k-38/about/")}>About</a></li>
+      <li><a href={route("explore/")} aria-current="page">Explore</a></li>
+      <li><a href={route("y2k-38/contact/")}>Contact</a></li>
+    </ul>
+  </nav>
+
+  <div class="explore__grid">
+    <section class="pixel-panel event-panel" aria-labelledby="event-heading">
+      <header class="pixel-panel__header">
+        <h1 class="pixel-panel__title" id="event-heading" data-event-title>Event information</h1>
+        <span class="pixel-panel__rule" aria-hidden="true"></span>
+        <button class="icon-button event-panel__close" type="button" aria-label="Close event details" disabled>
+          <span aria-hidden="true"></span>
+        </button>
+      </header>
+
+      <div class="event-panel__body">
+        <div class="event-panel__summary">
+          <img class="event-panel__icon" src={mailUnread.src} alt="" width="84" height="72" />
+          <dl class="event-panel__facts">
+            <div><dt>Event date:</dt><dd data-event-date>Choose a marker</dd></div>
+            <div><dt>Years before timeline corruption:</dt><dd data-event-years>—</dd></div>
+          </dl>
+        </div>
+
+        <div class="event-panel__copy">
+          <h2>Description:</h2>
+          <p data-event-description>
+            Select an envelope around Earth or press Play to travel through the events that shaped our timestamp-dependent world.
+          </p>
+        </div>
+
+        <p class="event-panel__source">
+          <strong>Source:</strong>
+          <a data-event-source aria-disabled="true">Select an event to view its source</a>
+        </p>
+
+        <div class="event-panel__navigation" aria-label="Event detail navigation">
+          <button type="button" data-previous-event aria-label="Show previous event">◀ <span>Previous event</span></button>
+          <button type="button" data-next-event aria-label="Show next event"><span>Next event</span> ▶</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="pixel-panel watch-panel" aria-labelledby="watch-heading">
+      <header class="pixel-panel__header pixel-panel__header--small">
+        <h2 class="pixel-panel__title" id="watch-heading">Y2K timeline watch</h2>
+        <span class="pixel-panel__rule" aria-hidden="true"></span>
+      </header>
+      <div class="watch-panel__body">
+        <picture class="watch-panel__art" aria-hidden="true">
+          <img class="watch-panel__stable" src={hourglassStable.src} alt="" width="88" height="148" />
+          <img class="watch-panel__corrupted" src={hourglassCorrupted.src} alt="" width="88" height="148" />
+        </picture>
+        <dl class="watch-panel__readout" aria-live="polite">
+          <div><dt>UTC time:</dt><dd data-utc-time>Sun, 20 Jul 1969 20:17:40 UTC</dd></div>
+          <div><dt>PST time:</dt><dd data-pst-time>Sun, 20 Jul 1969 13:17:40 PDT</dd></div>
+          <div><dt>Unix timestamp:</dt><dd data-unix-time>-14182940</dd></div>
+          <div><dt>32-bit binary:</dt><dd data-binary>11111111001001111000101101101100</dd></div>
+          <div class="watch-panel__overflow-date" hidden><dt>Clock resolves to:</dt><dd>December 13, 1901</dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <section class="globe-section" aria-label="Interactive event globe">
+      <div class="globe-stage">
+        <div class="globe-stage__drift">
+          <div
+            class="earth-sprite"
+            role="img"
+            aria-label="Rotating pixel-art Earth"
+            data-frame="0"
+            style={`background-image: url(${earthSheet.src});`}
+          ></div>
+        </div>
+        <span class="globe-stage__frame" aria-hidden="true"></span>
+        <div class="marker-layer" aria-label="Visible timeline events">
+          {markerSlots.map((slot, index) => (
+            <button
+              class={`event-marker event-marker--${slot}`}
+              type="button"
+              data-marker-slot={index}
+              aria-label={`Open timeline event ${index + 1}`}
+            >
+              <img src={mailUnread.src} alt="" width="84" height="72" />
+            </button>
+          ))}
+        </div>
+        <img class="corruption-art corruption-art--glitch" src={glitch.src} alt="" aria-hidden="true" />
+        <img class="corruption-art corruption-art--skull" src={skull.src} alt="" aria-hidden="true" />
+        <img class="corruption-art corruption-art--monitor" src={monitorCorrupted.src} alt="" aria-hidden="true" />
+      </div>
+    </section>
+
+    <section class="timeline-controls" id="timeline-controls" aria-labelledby="epoch-status">
+      <p class="epoch-status" id="epoch-status" aria-live="polite">
+        Epoch - status: <strong data-epoch-status>stable</strong>
+      </p>
+      <div class="timeline-controls__row">
+        <button class="transport-button" type="button" data-transport aria-label="Play timeline">
+          <span aria-hidden="true" data-transport-icon>▶</span>
+          <span data-transport-label>Play</span>
+        </button>
+        <div class="speed-controls" aria-label="Playback speed">
+          {[1, 2, 4, 8].map((speed) => (
+            <button type="button" data-speed={speed} aria-pressed={speed === 1 ? "true" : "false"}>{speed}×</button>
+          ))}
+        </div>
+      </div>
+      <label class="timeline-slider">
+        <span class="sr-only">Timeline event</span>
+        <input type="range" min="0" max="24" value="0" step="1" data-timeline-slider />
+      </label>
+      <p class="timeline-position" data-timeline-position>Event 1 of 25</p>
+    </section>
+  </div>
+</main>
+
