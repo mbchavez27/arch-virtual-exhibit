@@ -1,0 +1,28 @@
+.content {
+  display: block !important;
+  max-width: 100% !important;
+  padding-inline: clamp(1rem, 2.25vw, 2rem);
+}
+
+.content__block {
+  width: min(100%, 1440px);
+  min-width: 0;
+  margin-inline: auto;
+  gap: 1rem;
+}
+
+.article {
+  min-width: 0;
+  padding: 0 !important;
+  overflow: hidden;
+}
+
+.padder {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .content {
+    padding-inline: 0.75rem;
+  }
+}
