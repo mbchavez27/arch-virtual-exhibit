@@ -35,7 +35,7 @@ const markerSlots = ["north", "north-east", "east", "south-east", "south-west", 
     <ul class="explore-nav__links">
       <li><a href={route("y2k-38/")}>Home</a></li>
       <li><a href={route("y2k-38/about/")}>About</a></li>
-      <li><a href={route("explore/")} aria-current="page">Explore</a></li>
+      <li><a href={route("y2k-38/explore/")} aria-current="page">Explore</a></li>
       <li><a href={route("y2k-38/contact/")}>Contact</a></li>
     </ul>
   </nav>
@@ -121,6 +121,9 @@ const markerSlots = ["north", "north-east", "east", "south-east", "south-west", 
               <img src={mailUnread.src} alt="" width="84" height="72" />
             </button>
           ))}
+        </div>
+        <div class="selected-envelope-notice" aria-hidden="true">
+          <img src={mailUnread.src} alt="" width="84" height="72" />
         </div>
         <img class="corruption-art corruption-art--glitch" src={glitch.src} alt="" aria-hidden="true" />
         <img class="corruption-art corruption-art--skull" src={skull.src} alt="" aria-hidden="true" />
