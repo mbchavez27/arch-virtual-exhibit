@@ -1,50 +1,39 @@
 @import url("https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;500;600;700&display=swap");
 
-:root {
+.explore {
   color-scheme: dark;
   font-family: "Pixelify Sans", "Courier New", monospace;
-  background: #070914;
   --stable: #ff00c8;
   --stable-soft: #f4ff00;
   --corrupt: #ff1717;
   --cyan: #09d9ff;
   --panel: #020204;
   --ink: #fff;
+  min-width: 0;
+  color: var(--ink);
 }
 
-* {
+.explore,
+.explore *,
+.explore *::before,
+.explore *::after {
   box-sizing: border-box;
 }
 
-html {
-  min-width: 0;
-  background: #070914;
-  overflow-x: hidden;
-}
-
-body {
-  min-width: 0;
-  min-height: 100vh;
-  margin: 0;
-  color: var(--ink);
-  background: #070914;
-  overflow-x: hidden;
-}
-
-button,
-input,
-a {
+.explore button,
+.explore input,
+.explore a {
   font: inherit;
 }
 
-button,
-a {
+.explore button,
+.explore a {
   -webkit-tap-highlight-color: transparent;
 }
 
-button:focus-visible,
-a:focus-visible,
-input:focus-visible {
+.explore button:focus-visible,
+.explore a:focus-visible,
+.explore input:focus-visible {
   outline: 3px solid var(--cyan);
   outline-offset: 4px;
 }
@@ -296,8 +285,8 @@ input:focus-visible {
   image-rendering: pixelated;
 }
 
-dl,
-dd {
+.explore dl,
+.explore dd {
   margin: 0;
 }
 
@@ -911,9 +900,10 @@ dd {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
+  .explore,
+  .explore *,
+  .explore *::before,
+  .explore *::after {
     scroll-behavior: auto !important;
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
