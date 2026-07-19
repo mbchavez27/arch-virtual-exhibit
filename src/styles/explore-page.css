@@ -504,6 +504,19 @@ dd {
   width: 100%;
   height: auto;
   image-rendering: pixelated;
+  animation: mail-pixel-shift-a 2.7s steps(1, end) infinite;
+}
+
+.event-marker:nth-child(3n + 2) img {
+  animation-name: mail-pixel-shift-b;
+  animation-duration: 3.1s;
+  animation-delay: -0.8s;
+}
+
+.event-marker:nth-child(3n) img {
+  animation-name: mail-pixel-shift-c;
+  animation-duration: 2.4s;
+  animation-delay: -1.35s;
 }
 
 .event-marker:hover { transform: scale(1.14); }
@@ -519,6 +532,12 @@ dd {
 .event-marker--south-west { left: 24%; bottom: 13%; }
 .event-marker--west { top: 36%; left: 7%; }
 .event-marker--center { top: 46%; left: 46%; }
+
+.explore[data-current-index="24"] .marker-layer {
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
 
 .selected-envelope-notice {
   position: absolute;
@@ -714,6 +733,36 @@ dd {
   0%, 100% { transform: translate(0, 0) rotate(0deg); }
   30% { transform: translate(6px, -5px) rotate(0.25deg); }
   70% { transform: translate(-5px, 4px) rotate(-0.2deg); }
+}
+
+@keyframes mail-pixel-shift-a {
+  0%, 12%, 100% { transform: translate(0, 0); }
+  13%, 17% { transform: translate(3px, -2px); }
+  18%, 51% { transform: translate(0, 0); }
+  52%, 55% { transform: translate(-2px, 1px); }
+  56%, 78% { transform: translate(0, 0); }
+  79%, 82% { transform: translate(1px, 3px); }
+  83% { transform: translate(0, 0); }
+}
+
+@keyframes mail-pixel-shift-b {
+  0%, 20%, 100% { transform: translate(0, 0); }
+  21%, 25% { transform: translate(-3px, -1px); }
+  26%, 62% { transform: translate(0, 0); }
+  63%, 68% { transform: translate(2px, 2px); }
+  69%, 88% { transform: translate(0, 0); }
+  89%, 92% { transform: translate(2px, -2px); }
+  93% { transform: translate(0, 0); }
+}
+
+@keyframes mail-pixel-shift-c {
+  0%, 8%, 100% { transform: translate(0, 0); }
+  9%, 13% { transform: translate(1px, 2px); }
+  14%, 38% { transform: translate(0, 0); }
+  39%, 43% { transform: translate(3px, 0); }
+  44%, 72% { transform: translate(0, 0); }
+  73%, 77% { transform: translate(-2px, -3px); }
+  78% { transform: translate(0, 0); }
 }
 
 @keyframes envelope-warning-pop {
