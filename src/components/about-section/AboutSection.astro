@@ -26,6 +26,7 @@ import Navbar from "../navbar/Navbar.astro";
                 </a>
             </div>
         </div>
+        <div class="about-intro__transition" aria-hidden="true"></div>
     </section>
     <div class="context_component" id="context">
         <img src={warningMail.src} alt="Warning" class="context_component__icon" />
@@ -65,6 +66,20 @@ import Navbar from "../navbar/Navbar.astro";
             smoothly into the future. Click below to explore the interactive
             timeline and discover exactly how this impending digital reset unfolds.
         </p>
+
+        <div class="context_component__btns">
+            <a
+                href={`${import.meta.env.BASE_URL}/y2k-38/explore/`}
+                class="history_component__btn"
+            >Proceed to timeline</a>
+            <a
+                href={`${import.meta.env.BASE_URL}/y2k-38/explore/`}
+                class="history_component__arrow-link"
+                aria-label="Proceed to the interactive timeline"
+            >
+                <img src={moveBackward.src} alt="" class="history_component__arrow" />
+            </a>
+        </div>
     </div>
 </div>
 
@@ -119,6 +134,22 @@ import Navbar from "../navbar/Navbar.astro";
     .about-intro :global(.navbar) {
         position: relative;
         z-index: 2;
+    }
+
+    .about-intro__transition {
+        position: absolute;
+        z-index: 1;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        height: clamp(150px, 24vh, 280px);
+        pointer-events: none;
+        background: linear-gradient(
+            to bottom,
+            rgba(38, 0, 0, 0),
+            rgba(15, 2, 10, 0.56) 48%,
+            #050610 100%
+        );
     }
 
     .history_component {
@@ -185,7 +216,8 @@ import Navbar from "../navbar/Navbar.astro";
         text-shadow: 2px 2px 0 #000;
     }
 
-    .history_component__btns {
+    .history_component__btns,
+    .context_component__btns {
         position: relative;
         z-index: 2;
         display: flex;
@@ -234,6 +266,8 @@ import Navbar from "../navbar/Navbar.astro";
         flex-direction: column;
         align-items: center;
         text-align: center;
+        position: relative;
+        margin-top: -2px;
         padding: 8rem 2rem;
         width: 100%;
         background-color: #050610;
@@ -273,6 +307,10 @@ import Navbar from "../navbar/Navbar.astro";
         height: auto;
         image-rendering: pixelated;
         margin: 3rem auto;
+    }
+
+    .context_component__btns {
+        margin-top: 2rem;
     }
 
     @media (max-width: 640px) {
