@@ -346,6 +346,7 @@ dd {
 
 .event-panel__source strong {
   color: var(--stable);
+  margin-right: 0.25rem;
 }
 
 .event-panel__source a {
