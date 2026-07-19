@@ -185,9 +185,17 @@ const markerSlots = ["north", "north-east", "east", "south-east", "south-west", 
     const slider = app.querySelector<HTMLInputElement>("[data-timeline-slider]");
     const position = app.querySelector<HTMLElement>("[data-timeline-position]");
     const status = app.querySelector<HTMLElement>("[data-epoch-status]");
+    const transport = app.querySelector<HTMLButtonElement>("[data-transport]");
+    const transportIcon = app.querySelector<HTMLElement>("[data-transport-icon]");
+    const transportLabel = app.querySelector<HTMLElement>("[data-transport-label]");
+    const speedButtons = [...app.querySelectorAll<HTMLButtonElement>("[data-speed]")];
+    const earth = app.querySelector<HTMLElement>(".earth-sprite");
 
     let currentIndex = 0;
     let selectedIndex: number | null = null;
+    let playing = false;
+    let playbackSpeed = 1;
+    let playbackTimer: number | undefined;
 
     const toSigned32 = (value: number) => {
       if (value > 2_147_483_647) return value - 4_294_967_296;
@@ -297,10 +305,53 @@ const markerSlots = ["north", "north-east", "east", "south-east", "south-west", 
       if (position) position.textContent = `Event ${currentIndex + 1} of ${events.length}`;
       if (status) status.textContent = corrupted ? "corrupted" : "stable";
 
+      if (corrupted) {
+        playing = false;
+        window.clearTimeout(playbackTimer);
+      }
+
       updateMarkers();
       updateWatch(event, corrupted);
       updateDetails();
+      updateTransport();
       app.dispatchEvent(new CustomEvent("timelinechange", { detail: { currentIndex, corrupted } }));
+    }
+
+    function updateTransport() {
+      const atEnd = currentIndex === events.length - 1;
+      if (transportLabel) transportLabel.textContent = atEnd ? "Rewind" : playing ? "Pause" : "Play";
+      if (transportIcon) transportIcon.textContent = atEnd ? "◀" : playing ? "Ⅱ" : "▶";
+      if (transport) {
+        transport.setAttribute("aria-label", atEnd ? "Rewind timeline" : playing ? "Pause timeline" : "Play timeline");
+      }
+    }
+
+    function stopPlayback() {
+      playing = false;
+      window.clearTimeout(playbackTimer);
+      updateTransport();
+    }
+
+    function scheduleNextEvent() {
+      window.clearTimeout(playbackTimer);
+      if (!playing || currentIndex >= events.length - 1) return;
+      playbackTimer = window.setTimeout(() => {
+        setCurrent(currentIndex + 1, true);
+        if (playing) scheduleNextEvent();
+      }, Math.max(220, 1800 / playbackSpeed));
+    }
+
+    function startPlayback() {
+      if (currentIndex === events.length - 1) {
+        stopPlayback();
+        setCurrent(0, true);
+        return;
+      }
+      selectedIndex = currentIndex;
+      updateDetails();
+      playing = true;
+      updateTransport();
+      scheduleNextEvent();
     }
 
     markers.forEach((marker) => {
@@ -319,6 +370,31 @@ const markerSlots = ["north", "north-east", "east", "south-east", "south-west", 
     previousButton?.addEventListener("click", () => setCurrent(currentIndex - 1, true));
     nextButton?.addEventListener("click", () => setCurrent(currentIndex + 1, true));
 
+    transport?.addEventListener("click", () => {
+      if (currentIndex === events.length - 1) {
+        startPlayback();
+      } else if (playing) {
+        stopPlayback();
+      } else {
+        startPlayback();
+      }
+    });
+
+    speedButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        playbackSpeed = Number(button.dataset.speed) || 1;
+        speedButtons.forEach((candidate) => {
+          candidate.setAttribute("aria-pressed", String(candidate === button));
+        });
+        if (playing) scheduleNextEvent();
+      });
+    });
+
+    slider?.addEventListener("input", () => {
+      stopPlayback();
+      setCurrent(Number(slider.value), true);
+    });
+
     app.addEventListener("keydown", (event) => {
       const target = event.target as HTMLElement;
       if (target.matches("input, a")) return;
@@ -330,6 +406,65 @@ const markerSlots = ["north", "north-east", "east", "south-east", "south-west", 
         updateDetails();
       }
     });
+
+    if (earth) {
+      const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+      const corruptSteps = [
+        { delta: 0, delay: 280 },
+        { delta: 0, delay: 190 },
+        { delta: 6, delay: 70 },
+        { delta: 1, delay: 95 },
+        { delta: -4, delay: 145 },
+        { delta: 0, delay: 250 },
+        { delta: 9, delay: 65 },
+        { delta: -3, delay: 90 },
+        { delta: 2, delay: 110 },
+      ];
+      let earthFrame = 0;
+      let corruptStep = 0;
+      let lastFrameAt = performance.now();
+      let wasCorrupted = false;
+
+      const renderFrame = (frame: number) => {
+        earthFrame = Math.max(0, Math.min(93, frame));
+        const column = earthFrame % 10;
+        const row = Math.floor(earthFrame / 10);
+        earth.style.backgroundPosition = `${(column * 100) / 9}% ${(row * 100) / 9}%`;
+        earth.dataset.frame = String(earthFrame);
+      };
+
+      const animateEarth = (now: number) => {
+        const corrupted = app.dataset.corrupted === "true";
+        if (reducedMotion.matches) {
+          renderFrame(corrupted ? 90 : 0);
+          requestAnimationFrame(animateEarth);
+          return;
+        }
+
+        if (corrupted !== wasCorrupted) {
+          lastFrameAt = now;
+          corruptStep = 0;
+          wasCorrupted = corrupted;
+        }
+
+        if (corrupted) {
+          const step = corruptSteps[corruptStep];
+          if (now - lastFrameAt >= step.delay) {
+            renderFrame((earthFrame + step.delta + 94) % 94);
+            corruptStep = (corruptStep + 1) % corruptSteps.length;
+            lastFrameAt = now;
+          }
+        } else if (now - lastFrameAt >= 92) {
+          renderFrame((earthFrame + 1) % 94);
+          lastFrameAt = now;
+        }
+
+        requestAnimationFrame(animateEarth);
+      };
+
+      renderFrame(0);
+      requestAnimationFrame(animateEarth);
+    }
 
     setCurrent(0);
   }
