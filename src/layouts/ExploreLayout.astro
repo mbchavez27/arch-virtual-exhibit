@@ -1,0 +1,28 @@
+---
+import "../styles/explore-page.css";
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = "Explore the Y2K38 Timeline",
+  description = "An interactive journey through the milestones that lead to the Year 2038 timestamp overflow.",
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#070914" />
+    <title>{title}</title>
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>
+
