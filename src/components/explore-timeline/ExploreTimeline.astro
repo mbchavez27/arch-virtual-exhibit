@@ -7,6 +7,7 @@ import hourglassCorrupted from "../../assets/corrupted_earth/timeglass_icon_corr
 import skull from "../../assets/corrupted_earth/Skull.png";
 import glitch from "../../assets/corrupted_earth/glitch.png";
 import monitorCorrupted from "../../assets/corrupted_earth/monitor_corrupted.png";
+import { exploreEvents } from "../../data/explore-events";
 
 const baseUrl = import.meta.env.BASE_URL.endsWith("/")
   ? import.meta.env.BASE_URL
@@ -19,7 +20,11 @@ const markerSlots = ["north", "north-east", "east", "south-east", "south-west", 
   class="explore"
   id="explore-app"
   data-corrupted="false"
+  data-selected="false"
   data-earth-sheet={earthSheet.src}
+  data-events={JSON.stringify(exploreEvents)}
+  data-stable-icon={mailUnread.src}
+  data-corrupted-icon={skull.src}
 >
   <a class="skip-link" href="#timeline-controls">Skip to timeline controls</a>
 
@@ -140,10 +145,192 @@ const markerSlots = ["north", "north-east", "east", "south-east", "south-west", 
       </div>
       <label class="timeline-slider">
         <span class="sr-only">Timeline event</span>
-        <input type="range" min="0" max="24" value="0" step="1" data-timeline-slider />
+        <input type="range" min="0" max={exploreEvents.length - 1} value="0" step="1" data-timeline-slider />
       </label>
-      <p class="timeline-position" data-timeline-position>Event 1 of 25</p>
+      <p class="timeline-position" data-timeline-position>Event 1 of {exploreEvents.length}</p>
     </section>
   </div>
 </main>
 
+<script>
+  interface TimelineEvent {
+    name: string;
+    date: string;
+    iso: string;
+    yearsBefore: string;
+    description: string;
+    source: string;
+    sourceLabel: string;
+  }
+
+  const app = document.querySelector<HTMLElement>("#explore-app");
+
+  if (app) {
+    const events: TimelineEvent[] = JSON.parse(app.dataset.events ?? "[]");
+    const markers = [...app.querySelectorAll<HTMLButtonElement>("[data-marker-slot]")];
+    const title = app.querySelector<HTMLElement>("[data-event-title]");
+    const eventDate = app.querySelector<HTMLElement>("[data-event-date]");
+    const eventYears = app.querySelector<HTMLElement>("[data-event-years]");
+    const description = app.querySelector<HTMLElement>("[data-event-description]");
+    const source = app.querySelector<HTMLAnchorElement>("[data-event-source]");
+    const eventIcon = app.querySelector<HTMLImageElement>(".event-panel__icon");
+    const closeButton = app.querySelector<HTMLButtonElement>(".event-panel__close");
+    const previousButton = app.querySelector<HTMLButtonElement>("[data-previous-event]");
+    const nextButton = app.querySelector<HTMLButtonElement>("[data-next-event]");
+    const utcTime = app.querySelector<HTMLElement>("[data-utc-time]");
+    const pstTime = app.querySelector<HTMLElement>("[data-pst-time]");
+    const unixTime = app.querySelector<HTMLElement>("[data-unix-time]");
+    const binary = app.querySelector<HTMLElement>("[data-binary]");
+    const overflowDate = app.querySelector<HTMLElement>(".watch-panel__overflow-date");
+    const slider = app.querySelector<HTMLInputElement>("[data-timeline-slider]");
+    const position = app.querySelector<HTMLElement>("[data-timeline-position]");
+    const status = app.querySelector<HTMLElement>("[data-epoch-status]");
+
+    let currentIndex = 0;
+    let selectedIndex: number | null = null;
+
+    const toSigned32 = (value: number) => {
+      if (value > 2_147_483_647) return value - 4_294_967_296;
+      if (value < -2_147_483_648) return value + 4_294_967_296;
+      return value;
+    };
+
+    const toBinary32 = (value: number) =>
+      BigInt.asUintN(32, BigInt(value)).toString(2).padStart(32, "0");
+
+    const formatPacific = (date: Date) =>
+      new Intl.DateTimeFormat("en-GB", {
+        timeZone: "America/Los_Angeles",
+        weekday: "short",
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hourCycle: "h23",
+        timeZoneName: "short",
+      }).format(date);
+
+    function updateDetails() {
+      const hasSelection = selectedIndex !== null;
+      app.dataset.selected = String(hasSelection);
+      if (closeButton) closeButton.disabled = !hasSelection;
+
+      if (!hasSelection) {
+        if (title) title.textContent = "Event information";
+        if (eventDate) eventDate.textContent = "Choose a marker";
+        if (eventYears) eventYears.textContent = "—";
+        if (description) {
+          description.textContent = "Select an envelope around Earth or press Play to travel through the events that shaped our timestamp-dependent world.";
+        }
+        if (source) {
+          source.textContent = "Select an event to view its source";
+          source.removeAttribute("href");
+          source.removeAttribute("target");
+          source.removeAttribute("rel");
+          source.setAttribute("aria-disabled", "true");
+        }
+        if (eventIcon) eventIcon.src = app.dataset.stableIcon ?? eventIcon.src;
+      } else {
+        const event = events[selectedIndex];
+        if (title) title.textContent = event.name;
+        if (eventDate) eventDate.textContent = event.date;
+        if (eventYears) eventYears.textContent = event.yearsBefore;
+        if (description) description.textContent = event.description;
+        if (source) {
+          source.textContent = event.sourceLabel;
+          source.href = event.source;
+          source.target = "_blank";
+          source.rel = "noreferrer";
+          source.removeAttribute("aria-disabled");
+        }
+        if (eventIcon) {
+          eventIcon.src = currentIndex === events.length - 1
+            ? app.dataset.corruptedIcon ?? eventIcon.src
+            : app.dataset.stableIcon ?? eventIcon.src;
+        }
+      }
+
+      if (title) title.dataset.long = String((title.textContent?.length ?? 0) > 34);
+      if (previousButton) previousButton.disabled = currentIndex === 0;
+      if (nextButton) nextButton.disabled = currentIndex === events.length - 1;
+    }
+
+    function updateMarkers() {
+      const windowSize = Math.min(markers.length, events.length);
+      const start = Math.max(0, Math.min(currentIndex - Math.floor(windowSize / 2), events.length - windowSize));
+      const visibleIndices = Array.from({ length: windowSize }, (_, offset) => start + offset);
+
+      markers.forEach((marker, slot) => {
+        const index = visibleIndices[slot];
+        const event = events[index];
+        marker.hidden = !event;
+        if (!event) return;
+        marker.dataset.eventIndex = String(index);
+        marker.classList.toggle("event-marker--active", index === currentIndex);
+        marker.setAttribute("aria-pressed", String(index === currentIndex));
+        marker.setAttribute("aria-label", `${event.name}, ${event.date}`);
+      });
+    }
+
+    function updateWatch(event: TimelineEvent, corrupted: boolean) {
+      const date = new Date(event.iso);
+      const actualTimestamp = Math.floor(date.getTime() / 1000);
+      const signedTimestamp = toSigned32(actualTimestamp);
+      if (utcTime) utcTime.textContent = date.toUTCString().replace("GMT", "UTC");
+      if (pstTime) pstTime.textContent = formatPacific(date);
+      if (unixTime) unixTime.textContent = String(signedTimestamp);
+      if (binary) binary.textContent = toBinary32(signedTimestamp);
+      if (overflowDate) overflowDate.hidden = !corrupted;
+    }
+
+    function setCurrent(index: number, revealDetails = false) {
+      currentIndex = Math.max(0, Math.min(events.length - 1, index));
+      if (revealDetails) selectedIndex = currentIndex;
+      const event = events[currentIndex];
+      const corrupted = currentIndex === events.length - 1;
+
+      app.dataset.currentIndex = String(currentIndex);
+      app.dataset.corrupted = String(corrupted);
+      if (slider) slider.value = String(currentIndex);
+      if (position) position.textContent = `Event ${currentIndex + 1} of ${events.length}`;
+      if (status) status.textContent = corrupted ? "corrupted" : "stable";
+
+      updateMarkers();
+      updateWatch(event, corrupted);
+      updateDetails();
+      app.dispatchEvent(new CustomEvent("timelinechange", { detail: { currentIndex, corrupted } }));
+    }
+
+    markers.forEach((marker) => {
+      marker.addEventListener("click", () => {
+        const index = Number(marker.dataset.eventIndex);
+        if (!Number.isNaN(index)) setCurrent(index, true);
+      });
+    });
+
+    closeButton?.addEventListener("click", () => {
+      selectedIndex = null;
+      updateMarkers();
+      updateDetails();
+    });
+
+    previousButton?.addEventListener("click", () => setCurrent(currentIndex - 1, true));
+    nextButton?.addEventListener("click", () => setCurrent(currentIndex + 1, true));
+
+    app.addEventListener("keydown", (event) => {
+      const target = event.target as HTMLElement;
+      if (target.matches("input, a")) return;
+      if (event.key === "ArrowLeft") setCurrent(currentIndex - 1, true);
+      if (event.key === "ArrowRight") setCurrent(currentIndex + 1, true);
+      if (event.key === "Escape" && selectedIndex !== null) {
+        selectedIndex = null;
+        updateMarkers();
+        updateDetails();
+      }
+    });
+
+    setCurrent(0);
+  }
+</script>
