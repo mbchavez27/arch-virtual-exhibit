@@ -11,10 +11,6 @@
 .article {
   padding: 0 !important;
   overflow: hidden;
-  background: transparent !important;
-  border: 0 !important;
-  border-radius: 0 !important;
-  box-shadow: none !important;
 }
 
 .padder {
