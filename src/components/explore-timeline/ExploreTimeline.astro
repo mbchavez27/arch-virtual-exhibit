@@ -1,5 +1,4 @@
 ---
-import logo from "../../assets/exhibit-assets/y2k38_logo.png";
 import earthSheet from "../../assets/earthspin-sheet.png";
 import mailUnread from "../../assets/stable_earth/mail_unread.png";
 import hourglassStable from "../../assets/stable_earth/timeglass_icon_stable.png";
@@ -8,11 +7,8 @@ import skull from "../../assets/corrupted_earth/Skull.png";
 import glitch from "../../assets/corrupted_earth/glitch.png";
 import monitorCorrupted from "../../assets/corrupted_earth/monitor_corrupted.png";
 import { exploreEvents } from "../../data/explore-events";
+import Navbar from "../navbar/Navbar.astro";
 
-const baseUrl = import.meta.env.BASE_URL.endsWith("/")
-  ? import.meta.env.BASE_URL
-  : `${import.meta.env.BASE_URL}/`;
-const route = (path: string) => `${baseUrl}${path.replace(/^\//, "")}`;
 const markerSlots = ["north", "north-east", "east", "south-east", "south-west", "west", "center"];
 ---
 
@@ -28,22 +24,12 @@ const markerSlots = ["north", "north-east", "east", "south-east", "south-west", 
 >
   <a class="skip-link" href="#timeline-controls">Skip to timeline controls</a>
 
-  <nav class="explore-nav" aria-label="Exhibit navigation">
-    <a class="explore-nav__logo" href={route("y2k-38/")} aria-label="Y2K38 timeline home">
-      <img src={logo.src} alt="Y2K38 Timeline" width="171" height="74" />
-    </a>
-    <ul class="explore-nav__links">
-      <li><a href={route("y2k-38/")}>Home</a></li>
-      <li><a href={route("y2k-38/about/")}>About</a></li>
-      <li><a href={route("y2k-38/explore/")} aria-current="page">Explore</a></li>
-      <li><a href={route("y2k-38/contact/")}>Contact</a></li>
-    </ul>
-  </nav>
+  <Navbar />
 
   <div class="explore__grid">
     <section class="pixel-panel event-panel" aria-labelledby="event-heading">
       <header class="pixel-panel__header">
-        <h1 class="pixel-panel__title" id="event-heading" data-event-title>Event information</h1>
+        <h2 class="pixel-panel__title" id="event-heading" data-event-title>Event information</h2>
         <span class="pixel-panel__rule" aria-hidden="true"></span>
         <button class="icon-button event-panel__close" type="button" aria-label="Close event details" disabled>
           <span aria-hidden="true"></span>
