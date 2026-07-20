@@ -4,6 +4,7 @@
    Globe Carousel - Main Container
    ======================================== */
 .globe-carousel {
+    box-sizing: border-box;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -404,11 +405,17 @@
    Responsive
    ======================================== */
 @media (max-width: 640px) {
+    .globe-carousel {
+        padding: 1rem 0.25rem;
+    }
+
     .globe-carousel__stage {
         max-width: 300px;
     }
 
     .globe-carousel__nav {
+        min-width: 44px;
+        min-height: 44px;
         padding: 0.4rem;
     }
 }
