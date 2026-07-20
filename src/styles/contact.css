@@ -1,5 +1,9 @@
 .article {
-  background: url('../assets/exhibit-assets/CONTACT_BG_HERE.png') !important;
+  background: url('../assets/stable_earth/stable_earth.png') !important;
   background-size: cover !important;
   background-position: center !important;
+}
+
+.crew-title {
+  display: block !important;
 }
