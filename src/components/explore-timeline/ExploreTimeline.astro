@@ -106,8 +106,8 @@ const markerSlots = ["north", "north-east", "east", "south-east", "south-west", 
         </p>
 
         <div class="event-panel__navigation" aria-label="Event detail navigation">
-          <button type="button" data-previous-event aria-label="Show previous event">◀ <span>Previous event</span></button>
-          <button type="button" data-next-event aria-label="Show next event"><span>Next event</span> ▶</button>
+          <button type="button" data-previous-event aria-label="Show previous event" aria-keyshortcuts="ArrowLeft">◀ <span>Previous event</span></button>
+          <button type="button" data-next-event aria-label="Show next event" aria-keyshortcuts="ArrowRight"><span>Next event</span> ▶</button>
         </div>
       </div>
     </section>
@@ -170,7 +170,7 @@ const markerSlots = ["north", "north-east", "east", "south-east", "south-west", 
         Epoch - status: <strong data-epoch-status>stable</strong>
       </p>
       <div class="timeline-controls__row">
-        <button class="transport-button" type="button" data-transport aria-label="Play timeline">
+        <button class="transport-button" type="button" data-transport aria-label="Play timeline" aria-keyshortcuts="Space">
           <span aria-hidden="true" data-transport-icon>▶</span>
           <span data-transport-label>Play</span>
         </button>
@@ -422,6 +422,16 @@ const markerSlots = ["north", "north-east", "east", "south-east", "south-west", 
       scheduleNextEvent();
     }
 
+    function togglePlayback() {
+      if (currentIndex === events.length - 1) {
+        startPlayback();
+      } else if (playing) {
+        stopPlayback();
+      } else {
+        startPlayback();
+      }
+    }
+
     markers.forEach((marker) => {
       marker.addEventListener("click", () => {
         const index = Number(marker.dataset.eventIndex);
@@ -438,15 +448,7 @@ const markerSlots = ["north", "north-east", "east", "south-east", "south-west", 
     previousButton?.addEventListener("click", () => stepTimeline(-1));
     nextButton?.addEventListener("click", () => stepTimeline(1));
 
-    transport?.addEventListener("click", () => {
-      if (currentIndex === events.length - 1) {
-        startPlayback();
-      } else if (playing) {
-        stopPlayback();
-      } else {
-        startPlayback();
-      }
-    });
+    transport?.addEventListener("click", togglePlayback);
 
     speedButtons.forEach((button) => {
       button.addEventListener("click", () => {
@@ -463,11 +465,25 @@ const markerSlots = ["north", "north-east", "east", "south-east", "south-west", 
       setCurrent(Number(slider.value), true);
     });
 
-    app.addEventListener("keydown", (event) => {
-      const target = event.target as HTMLElement;
-      if (target.matches("input, a")) return;
-      if (event.key === "ArrowLeft") stepTimeline(-1);
-      if (event.key === "ArrowRight") stepTimeline(1);
+    document.addEventListener("keydown", (event) => {
+      const target = event.target;
+      if (
+        target instanceof Element
+        && target.closest("input, textarea, select, button, a, [contenteditable='true']")
+      ) return;
+
+      if (event.key === "ArrowLeft") {
+        event.preventDefault();
+        stepTimeline(-1);
+      }
+      if (event.key === "ArrowRight") {
+        event.preventDefault();
+        stepTimeline(1);
+      }
+      if ((event.key === " " || event.code === "Space") && !event.repeat) {
+        event.preventDefault();
+        togglePlayback();
+      }
       if (event.key === "Escape" && selectedIndex !== null) {
         selectedIndex = null;
         updateMarkers();
