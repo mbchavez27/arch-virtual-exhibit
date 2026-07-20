@@ -3,23 +3,31 @@ import corruptedTv from "../../assets/exhibit-assets/corrupted_tv.png";
 import warningMail from "../../assets/exhibit-assets/warning_mail.png";
 import clock from "../../assets/exhibit-assets/clock.png";
 import moveBackward from "../../assets/exhibit-assets/move_backward.png";
+import corruptedBackground from "../../assets/corrupted_earth/corrupted_earth.png";
+import glitchOverlay from "../../assets/corrupted_earth/glitch.png";
 import Navbar from "../navbar/Navbar.astro";
 ---
 
 <div class="about-section">
-    <Navbar />
-    <div class="history_component">
-        <img src={corruptedTv.src} alt="Corrupted TV" class="history_component__tv" />
-        <p class="history_component__desc">
-            History is about to repeat itself in the digital world.
-        </p>
-        <div class="history_component__btns">
-            <a href="#context" class="history_component__btn">Proceed</a>
-            <a href="#context" class="history_component__arrow-link">
-                <img src={moveBackward.src} alt="Down" class="history_component__arrow" />
-            </a>
+    <section
+        class="about-intro"
+        style={`--corrupted-background: url("${corruptedBackground.src}"); --glitch-overlay: url("${glitchOverlay.src}");`}
+    >
+        <Navbar />
+        <div class="history_component">
+            <img src={corruptedTv.src} alt="Corrupted TV" class="history_component__tv" />
+            <p class="history_component__desc">
+                History is about to repeat itself in the digital world.
+            </p>
+            <div class="history_component__btns">
+                <a href="#context" class="history_component__btn">Proceed</a>
+                <a href="#context" class="history_component__arrow-link">
+                    <img src={moveBackward.src} alt="Down" class="history_component__arrow" />
+                </a>
+            </div>
         </div>
-    </div>
+        <div class="about-intro__transition" aria-hidden="true"></div>
+    </section>
     <div class="context_component" id="context">
         <img src={warningMail.src} alt="Warning" class="context_component__icon" />
 
@@ -58,6 +66,20 @@ import Navbar from "../navbar/Navbar.astro";
             smoothly into the future. Click below to explore the interactive
             timeline and discover exactly how this impending digital reset unfolds.
         </p>
+
+        <div class="context_component__btns">
+            <a
+                href={`${import.meta.env.BASE_URL}/y2k-38/explore/`}
+                class="history_component__btn"
+            >Proceed to timeline</a>
+            <a
+                href={`${import.meta.env.BASE_URL}/y2k-38/explore/`}
+                class="history_component__arrow-link"
+                aria-label="Proceed to the interactive timeline"
+            >
+                <img src={moveBackward.src} alt="" class="history_component__arrow" />
+            </a>
+        </div>
     </div>
 </div>
 
@@ -66,18 +88,81 @@ import Navbar from "../navbar/Navbar.astro";
 
     .about-section {
         padding: 0;
+        background: #050610;
+    }
+
+    .about-intro {
+        position: relative;
+        isolation: isolate;
+        overflow: hidden;
+        background-color: #260000;
+        background-image: var(--corrupted-background);
+        background-repeat: repeat;
+        background-position: center top;
+        background-size: 1440px 1024px;
+        image-rendering: pixelated;
+    }
+
+    .about-intro::before,
+    .about-intro::after {
+        content: "";
+        position: absolute;
+        z-index: 0;
+        inset: 0;
+        pointer-events: none;
+    }
+
+    .about-intro::before {
+        opacity: 0.52;
+        mix-blend-mode: screen;
+        background-image: var(--glitch-overlay);
+        background-repeat: repeat;
+        background-position: 6% 18%;
+        background-size: 540px 405px;
+        animation: about-glitch-drift 2.4s steps(6, end) infinite;
+    }
+
+    .about-intro::after {
+        opacity: 0.34;
+        mix-blend-mode: screen;
+        background:
+            repeating-linear-gradient(to bottom, transparent 0 9px, rgba(255, 0, 0, 0.28) 9px 11px),
+            linear-gradient(90deg, transparent 9%, rgba(255, 0, 0, 0.18) 9% 14%, transparent 14% 78%, rgba(0, 216, 255, 0.12) 78% 80%, transparent 80%);
+        animation: about-screen-tear 1.35s steps(5, end) infinite;
+    }
+
+    .about-intro :global(.navbar) {
+        position: relative;
+        z-index: 2;
+    }
+
+    .about-intro__transition {
+        position: absolute;
+        z-index: 1;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        height: clamp(150px, 24vh, 280px);
+        pointer-events: none;
+        background: linear-gradient(
+            to bottom,
+            rgba(38, 0, 0, 0),
+            rgba(15, 2, 10, 0.56) 48%,
+            #050610 100%
+        );
     }
 
     .history_component {
         position: relative;
+        z-index: 1;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
         text-align: center;
-        padding: 6rem 2rem;
+        padding: 3rem 2rem 6rem;
         width: 100%;
-        min-height: 80vh;
+        min-height: max(680px, calc(100svh - 108px));
     }
 
     .history_component__tv {
@@ -103,6 +188,22 @@ import Navbar from "../navbar/Navbar.astro";
         96% { filter: none; transform: translateY(-12px); }
     }
 
+    @keyframes about-glitch-drift {
+        0%, 100% { transform: translate(0); opacity: 0.42; }
+        22% { transform: translate(12px, -5px); opacity: 0.62; }
+        23% { transform: translate(-8px, 4px); opacity: 0.28; }
+        54% { transform: translate(0); opacity: 0.48; }
+        55% { transform: translate(18px, 2px); opacity: 0.68; }
+        58% { transform: translate(-5px, -3px); opacity: 0.36; }
+    }
+
+    @keyframes about-screen-tear {
+        0%, 100% { clip-path: inset(0); transform: translateX(0); }
+        42% { clip-path: inset(12% 0 70%); transform: translateX(8px); }
+        46% { clip-path: inset(58% 0 25%); transform: translateX(-11px); }
+        50% { clip-path: inset(0); transform: translateX(0); }
+    }
+
     .history_component__desc {
         position: relative;
         z-index: 2;
@@ -115,7 +216,8 @@ import Navbar from "../navbar/Navbar.astro";
         text-shadow: 2px 2px 0 #000;
     }
 
-    .history_component__btns {
+    .history_component__btns,
+    .context_component__btns {
         position: relative;
         z-index: 2;
         display: flex;
@@ -164,8 +266,15 @@ import Navbar from "../navbar/Navbar.astro";
         flex-direction: column;
         align-items: center;
         text-align: center;
+        position: relative;
+        margin-top: -2px;
         padding: 8rem 2rem;
         width: 100%;
+        background-color: #050610;
+        background-image: url("../../assets/exhibit-assets/about_bg.png");
+        background-repeat: repeat;
+        background-position: center top;
+        background-size: 1440px 1024px;
     }
 
     .context_component__icon {
@@ -198,5 +307,32 @@ import Navbar from "../navbar/Navbar.astro";
         height: auto;
         image-rendering: pixelated;
         margin: 3rem auto;
+    }
+
+    .context_component__btns {
+        margin-top: 2rem;
+    }
+
+    @media (max-width: 640px) {
+        .history_component {
+            min-height: 680px;
+            padding: 2rem 1.25rem 4rem;
+        }
+
+        .history_component__tv {
+            margin-bottom: 2rem;
+        }
+
+        .context_component {
+            padding: 5rem 1.25rem;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .about-intro::before,
+        .about-intro::after,
+        .history_component__tv {
+            animation: none;
+        }
     }
 </style>

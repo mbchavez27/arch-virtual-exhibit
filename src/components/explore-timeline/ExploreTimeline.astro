@@ -17,6 +17,8 @@ const markerSlots = ["north", "north-east", "east", "south-east", "south-west", 
   id="explore-app"
   data-corrupted="false"
   data-selected="false"
+  data-playing="false"
+  data-navigation-flash="false"
   data-earth-sheet={earthSheet.src}
   data-events={JSON.stringify(exploreEvents)}
   data-stable-icon={mailUnread.src}
@@ -185,6 +187,8 @@ const markerSlots = ["north", "north-east", "east", "south-east", "south-west", 
     let playing = false;
     let playbackSpeed = 1;
     let playbackTimer: number | undefined;
+    let navigationFlashTimer: number | undefined;
+    let navigationFlashFrame: number | undefined;
 
     const toSigned32 = (value: number) => {
       if (value > 2_147_483_647) return value - 4_294_967_296;
@@ -308,6 +312,7 @@ const markerSlots = ["north", "north-east", "east", "south-east", "south-west", 
 
     function updateTransport() {
       const atEnd = currentIndex === events.length - 1;
+      app.dataset.playing = String(playing);
       if (transportLabel) transportLabel.textContent = atEnd ? "Rewind" : playing ? "Pause" : "Play";
       if (transportIcon) transportIcon.textContent = atEnd ? "◀" : playing ? "Ⅱ" : "▶";
       if (transport) {
@@ -319,6 +324,30 @@ const markerSlots = ["north", "north-east", "east", "south-east", "south-west", 
       playing = false;
       window.clearTimeout(playbackTimer);
       updateTransport();
+    }
+
+    function clearNavigationFlash() {
+      window.clearTimeout(navigationFlashTimer);
+      window.cancelAnimationFrame(navigationFlashFrame);
+      app.dataset.navigationFlash = "false";
+    }
+
+    function flashNavigation() {
+      if (playing || app.dataset.corrupted === "true") return;
+      clearNavigationFlash();
+      navigationFlashFrame = window.requestAnimationFrame(() => {
+        app.dataset.navigationFlash = "true";
+        navigationFlashTimer = window.setTimeout(() => {
+          app.dataset.navigationFlash = "false";
+        }, 760);
+      });
+    }
+
+    function stepTimeline(delta: number) {
+      const nextIndex = Math.max(0, Math.min(events.length - 1, currentIndex + delta));
+      if (nextIndex === currentIndex) return;
+      setCurrent(nextIndex, true);
+      flashNavigation();
     }
 
     function scheduleNextEvent() {
@@ -338,6 +367,7 @@ const markerSlots = ["north", "north-east", "east", "south-east", "south-west", 
       }
       selectedIndex = currentIndex;
       updateDetails();
+      clearNavigationFlash();
       playing = true;
       updateTransport();
       scheduleNextEvent();
@@ -356,8 +386,8 @@ const markerSlots = ["north", "north-east", "east", "south-east", "south-west", 
       updateDetails();
     });
 
-    previousButton?.addEventListener("click", () => setCurrent(currentIndex - 1, true));
-    nextButton?.addEventListener("click", () => setCurrent(currentIndex + 1, true));
+    previousButton?.addEventListener("click", () => stepTimeline(-1));
+    nextButton?.addEventListener("click", () => stepTimeline(1));
 
     transport?.addEventListener("click", () => {
       if (currentIndex === events.length - 1) {
@@ -387,8 +417,8 @@ const markerSlots = ["north", "north-east", "east", "south-east", "south-west", 
     app.addEventListener("keydown", (event) => {
       const target = event.target as HTMLElement;
       if (target.matches("input, a")) return;
-      if (event.key === "ArrowLeft") setCurrent(currentIndex - 1, true);
-      if (event.key === "ArrowRight") setCurrent(currentIndex + 1, true);
+      if (event.key === "ArrowLeft") stepTimeline(-1);
+      if (event.key === "ArrowRight") stepTimeline(1);
       if (event.key === "Escape" && selectedIndex !== null) {
         selectedIndex = null;
         updateMarkers();
