@@ -213,6 +213,7 @@ const markerSlots = ["north", "north-east", "east", "south-east", "south-west", 
     const description = app.querySelector<HTMLElement>("[data-event-description]");
     const source = app.querySelector<HTMLAnchorElement>("[data-event-source]");
     const eventIcon = app.querySelector<HTMLImageElement>(".event-panel__icon");
+    const selectedIcon = app.querySelector<HTMLImageElement>(".selected-envelope-notice img");
     const closeButton = app.querySelector<HTMLButtonElement>(".event-panel__close");
     const previousButton = app.querySelector<HTMLButtonElement>("[data-previous-event]");
     const nextButton = app.querySelector<HTMLButtonElement>("[data-next-event]");
@@ -271,7 +272,7 @@ const markerSlots = ["north", "north-east", "east", "south-east", "south-west", 
         if (eventDate) eventDate.textContent = "Choose a marker";
         if (eventYears) eventYears.textContent = "—";
         if (description) {
-          description.textContent = "Select an envelope around Earth or press Play to travel through the events that shaped our timestamp-dependent world.";
+          description.textContent = "Select an icon around Earth or press Play to travel through the events that shaped our timestamp-dependent world.";
         }
         if (source) {
           source.textContent = "Select an event to view its source";
@@ -281,6 +282,7 @@ const markerSlots = ["north", "north-east", "east", "south-east", "south-west", 
           source.setAttribute("aria-disabled", "true");
         }
         if (eventIcon) eventIcon.src = events.length > 0 ? iconMap[events[0].icon] ?? eventIcon.src : eventIcon.src;
+         if (selectedIcon) selectedIcon.src = events.length > 0 ? iconMap[events[0].icon] ?? selectedIcon.src : selectedIcon.src;
       } else {
         const event = events[selectedIndex];
         if (title) title.textContent = event.name;
@@ -295,6 +297,7 @@ const markerSlots = ["north", "north-east", "east", "south-east", "south-west", 
           source.removeAttribute("aria-disabled");
         }
         if (eventIcon) eventIcon.src = iconMap[event.icon] ?? eventIcon.src;
+        if (selectedIcon) selectedIcon.src = iconMap[event.icon] ?? selectedIcon.src;
       }
 
       if (title) title.dataset.long = String((title.textContent?.length ?? 0) > 34);
