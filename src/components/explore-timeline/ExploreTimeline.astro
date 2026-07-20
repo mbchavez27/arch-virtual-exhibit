@@ -1,11 +1,58 @@
 ---
 import earthSheet from "../../assets/earthspin-sheet.png";
-import mailUnread from "../../assets/stable_earth/mail_unread.png";
 import hourglassStable from "../../assets/stable_earth/timeglass_icon_stable.png";
 import hourglassCorrupted from "../../assets/corrupted_earth/timeglass_icon_corrupted.png";
 import skull from "../../assets/corrupted_earth/Skull.png";
 import glitch from "../../assets/corrupted_earth/glitch.png";
 import monitorCorrupted from "../../assets/corrupted_earth/monitor_corrupted.png";
+
+import moonIcon from "../../assets/stable_earth/event-icons/moon.png";
+import calendarIcon from "../../assets/stable_earth/event-icons/calendar.png";
+import processorIcon from "../../assets/stable_earth/event-icons/processor.png";
+import wwwIcon from "../../assets/stable_earth/event-icons/www.png";
+import internetIcon from "../../assets/stable_earth/event-icons/internet.png";
+import webIcon from "../../assets/stable_earth/event-icons/web.png";
+import windowsIcon from "../../assets/stable_earth/event-icons/windows.png";
+import usIcon from "../../assets/stable_earth/event-icons/us.png";
+import y2kCouncilIcon from "../../assets/stable_earth/event-icons/y2k-council.png";
+import y2kActIcon from "../../assets/stable_earth/event-icons/y2k-act.png";
+import y2kCoopIcon from "../../assets/stable_earth/event-icons/y2k-coop.png";
+import gpsIcon from "../../assets/stable_earth/event-icons/gps.png";
+import warningIcon from "../../assets/stable_earth/event-icons/warning.png";
+import y2kPassIcon from "../../assets/stable_earth/event-icons/y2k-pass.png";
+import satelliteIcon from "../../assets/stable_earth/event-icons/satellite.png";
+import weatherIcon from "../../assets/stable_earth/event-icons/weather.png";
+import japanIcon from "../../assets/stable_earth/event-icons/japan.png";
+import iphoneIcon from "../../assets/stable_earth/event-icons/iphone.png";
+import bitcoinIcon from "../../assets/stable_earth/event-icons/bitcoin.png";
+import virusIcon from "../../assets/stable_earth/event-icons/virus.png";
+import bit64Icon from "../../assets/stable_earth/event-icons/64-bit.png";
+
+const iconMap: Record<string, string> = {
+  moon: moonIcon.src,
+  calendar: calendarIcon.src,
+  processor: processorIcon.src,
+  www: wwwIcon.src,
+  internet: internetIcon.src,
+  web: webIcon.src,
+  windows: windowsIcon.src,
+  us: usIcon.src,
+  "y2k-council": y2kCouncilIcon.src,
+  "y2k-act": y2kActIcon.src,
+  "y2k-coop": y2kCoopIcon.src,
+  gps: gpsIcon.src,
+  warning: warningIcon.src,
+  "y2k-pass": y2kPassIcon.src,
+  satellite: satelliteIcon.src,
+  weather: weatherIcon.src,
+  japan: japanIcon.src,
+  iphone: iphoneIcon.src,
+  bitcoin: bitcoinIcon.src,
+  virus: virusIcon.src,
+  "64-bit": bit64Icon.src,
+  skull: skull.src,
+};
+
 import { exploreEvents } from "../../data/explore-events";
 import Navbar from "../navbar/Navbar.astro";
 
@@ -21,8 +68,7 @@ const markerSlots = ["north", "north-east", "east", "south-east", "south-west", 
   data-navigation-flash="false"
   data-earth-sheet={earthSheet.src}
   data-events={JSON.stringify(exploreEvents)}
-  data-stable-icon={mailUnread.src}
-  data-corrupted-icon={skull.src}
+  data-icon-map={JSON.stringify(iconMap)}
 >
   <a class="skip-link" href="#timeline-controls">Skip to timeline controls</a>
 
@@ -40,7 +86,7 @@ const markerSlots = ["north", "north-east", "east", "south-east", "south-west", 
 
       <div class="event-panel__body">
         <div class="event-panel__summary">
-          <img class="event-panel__icon" src={mailUnread.src} alt="" width="84" height="72" />
+          <img class="event-panel__icon" src={moonIcon.src} alt="" width="84" height="72" />
           <dl class="event-panel__facts">
             <div><dt>Event date:</dt><dd data-event-date>Choose a marker</dd></div>
             <div><dt>Years before timeline corruption:</dt><dd data-event-years>—</dd></div>
@@ -106,12 +152,12 @@ const markerSlots = ["north", "north-east", "east", "south-east", "south-west", 
               data-marker-slot={index}
               aria-label={`Open timeline event ${index + 1}`}
             >
-              <img src={mailUnread.src} alt="" width="84" height="72" />
+              <img src={moonIcon.src} alt="" width="84" height="72" />
             </button>
           ))}
         </div>
         <div class="selected-envelope-notice" aria-hidden="true">
-          <img src={mailUnread.src} alt="" width="84" height="72" />
+          <img src={moonIcon.src} alt="" width="84" height="72" />
         </div>
         <img class="corruption-art corruption-art--glitch" src={glitch.src} alt="" aria-hidden="true" />
         <img class="corruption-art corruption-art--skull" src={skull.src} alt="" aria-hidden="true" />
@@ -152,12 +198,14 @@ const markerSlots = ["north", "north-east", "east", "south-east", "south-west", 
     description: string;
     source: string;
     sourceLabel: string;
+    icon: string;
   }
 
   const app = document.querySelector<HTMLElement>("#explore-app");
 
   if (app) {
     const events: TimelineEvent[] = JSON.parse(app.dataset.events ?? "[]");
+    const iconMap: Record<string, string> = JSON.parse(app.dataset.iconMap ?? "{}");
     const markers = [...app.querySelectorAll<HTMLButtonElement>("[data-marker-slot]")];
     const title = app.querySelector<HTMLElement>("[data-event-title]");
     const eventDate = app.querySelector<HTMLElement>("[data-event-date]");
@@ -232,7 +280,7 @@ const markerSlots = ["north", "north-east", "east", "south-east", "south-west", 
           source.removeAttribute("rel");
           source.setAttribute("aria-disabled", "true");
         }
-        if (eventIcon) eventIcon.src = app.dataset.stableIcon ?? eventIcon.src;
+        if (eventIcon) eventIcon.src = events.length > 0 ? iconMap[events[0].icon] ?? eventIcon.src : eventIcon.src;
       } else {
         const event = events[selectedIndex];
         if (title) title.textContent = event.name;
@@ -246,11 +294,7 @@ const markerSlots = ["north", "north-east", "east", "south-east", "south-west", 
           source.rel = "noreferrer";
           source.removeAttribute("aria-disabled");
         }
-        if (eventIcon) {
-          eventIcon.src = currentIndex === events.length - 1
-            ? app.dataset.corruptedIcon ?? eventIcon.src
-            : app.dataset.stableIcon ?? eventIcon.src;
-        }
+        if (eventIcon) eventIcon.src = iconMap[event.icon] ?? eventIcon.src;
       }
 
       if (title) title.dataset.long = String((title.textContent?.length ?? 0) > 34);
@@ -272,6 +316,8 @@ const markerSlots = ["north", "north-east", "east", "south-east", "south-west", 
         marker.classList.toggle("event-marker--active", index === currentIndex);
         marker.setAttribute("aria-pressed", String(index === currentIndex));
         marker.setAttribute("aria-label", `${event.name}, ${event.date}`);
+        const img = marker.querySelector("img");
+        if (img) img.src = iconMap[event.icon] ?? img.src;
       });
     }
 
