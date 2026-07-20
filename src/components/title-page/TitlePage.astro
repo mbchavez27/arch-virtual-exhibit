@@ -50,6 +50,10 @@ import Navbar from "../navbar/Navbar.astro";
         width: 100%;
         max-width: 1180px;
         margin: 0 auto;
+        --mx: 0;
+        --my: 0;
+        transform: translate(calc(var(--mx) * 1px), calc(var(--my) * 1px));
+        transition: transform 0.15s ease-out;
     }
 
     .hero__pretitle {
@@ -58,6 +62,12 @@ import Navbar from "../navbar/Navbar.astro";
         color: #6fd7f7;
         margin: 0 0 0.5rem;
         letter-spacing: 0.05em;
+        animation: hero-pretitle-enter 0.8s ease-out both;
+    }
+
+    @keyframes hero-pretitle-enter {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
     }
 
     .hero__logo {
@@ -66,6 +76,19 @@ import Navbar from "../navbar/Navbar.astro";
         height: auto;
         margin-bottom: 0.5rem;
         image-rendering: pixelated;
+        animation: hero-logo-float 3s ease-in-out infinite, hero-logo-glitch 5s steps(2) infinite;
+    }
+
+    @keyframes hero-logo-float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-6px); }
+    }
+
+    @keyframes hero-logo-glitch {
+        0%, 88%, 100% { filter: none; }
+        90% { filter: hue-rotate(60deg); transform: translate(2px, -6px); }
+        92% { filter: hue-rotate(-60deg); transform: translate(-3px, -3px); }
+        94% { filter: none; transform: translateY(-6px); }
     }
 
     .hero__desc {
@@ -76,6 +99,12 @@ import Navbar from "../navbar/Navbar.astro";
         max-width: 820px;
         line-height: 1.5;
         text-shadow: 1px 1px 0 #000;
+        animation: hero-desc-enter 0.8s ease-out 0.3s both;
+    }
+
+    @keyframes hero-desc-enter {
+        from { opacity: 0; }
+        to { opacity: 1; }
     }
 
     .hero__btns {
@@ -100,9 +129,22 @@ import Navbar from "../navbar/Navbar.astro";
         text-decoration: none;
         border: 3px solid #000;
         cursor: pointer;
+        animation: hero-btn-pulse 2s ease-in-out infinite;
         transition:
             transform 0.15s ease,
-            box-shadow 0.15s ease;
+            box-shadow 0.15s ease,
+            filter 0.15s steps(2);
+    }
+
+    @keyframes hero-btn-pulse {
+        0%, 100% {
+            text-shadow: 0 0 4px rgba(255, 255, 255, 0.2);
+            filter: brightness(1);
+        }
+        50% {
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.4), 0 0 16px rgba(255, 255, 255, 0.1);
+            filter: brightness(1.1);
+        }
     }
 
     .hero__btn--start {
@@ -114,11 +156,14 @@ import Navbar from "../navbar/Navbar.astro";
     .hero__btn--start:hover {
         transform: translate(-2px, -2px);
         box-shadow: 6px 6px 0 #000;
+        animation: hero-btn-pulse-hover 0.8s ease-in-out infinite;
+        filter: brightness(1.2);
     }
 
     .hero__btn--start:active {
         transform: translate(2px, 2px);
         box-shadow: 2px 2px 0 #000;
+        filter: brightness(1.5);
     }
 
     .hero__btn--quit {
@@ -130,11 +175,23 @@ import Navbar from "../navbar/Navbar.astro";
     .hero__btn--quit:hover {
         transform: translate(-2px, -2px);
         box-shadow: 6px 6px 0 #000;
+        animation: hero-btn-pulse-hover 0.8s ease-in-out infinite;
+        filter: brightness(1.2);
     }
 
     .hero__btn--quit:active {
         transform: translate(2px, 2px);
         box-shadow: 2px 2px 0 #000;
+        filter: brightness(1.5);
+    }
+
+    @keyframes hero-btn-pulse-hover {
+        0%, 100% {
+            text-shadow: 0 0 6px rgba(255, 255, 255, 0.4);
+        }
+        50% {
+            text-shadow: 0 0 12px rgba(255, 255, 255, 0.7), 0 0 20px rgba(255, 255, 255, 0.2);
+        }
     }
 
     .hero :global(.navbar) {
@@ -162,4 +219,57 @@ import Navbar from "../navbar/Navbar.astro";
             padding: 2.5rem 1rem 4rem;
         }
     }
+
+    @media (prefers-reduced-motion: reduce) {
+        .hero__pretitle,
+        .hero__logo,
+        .hero__desc,
+        .hero__btn {
+            animation: none !important;
+        }
+
+        .hero__btn--start:hover,
+        .hero__btn--quit:hover {
+            animation: none !important;
+        }
+
+        .hero__content {
+            transition: none !important;
+            transform: none !important;
+        }
+    }
 </style>
+
+<script>
+    const hero = document.getElementById("home");
+    const content = hero?.querySelector(".hero__content");
+    if (hero && content && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        let targetX = 0;
+        let targetY = 0;
+        let currentX = 0;
+        let currentY = 0;
+
+        hero.addEventListener("mousemove", (e) => {
+            const rect = hero.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            targetX = ((e.clientX - centerX) / (rect.width / 2)) * 12;
+            targetY = ((e.clientY - centerY) / (rect.height / 2)) * 12;
+        });
+
+        hero.addEventListener("mouseleave", () => {
+            targetX = 0;
+            targetY = 0;
+        });
+
+        const animate = () => {
+            currentX += (targetX - currentX) * 0.08;
+            currentY += (targetY - currentY) * 0.08;
+            content.style.setProperty("--mx", currentX.toFixed(2));
+            content.style.setProperty("--my", currentY.toFixed(2));
+            requestAnimationFrame(animate);
+        };
+
+        requestAnimationFrame(animate);
+    }
+</script>
