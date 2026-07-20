@@ -22,7 +22,42 @@
 }
 
 @media (max-width: 640px) {
+  .header {
+    padding: 0.75rem !important;
+  }
+
+  .header__titleblock {
+    gap: 0.75rem;
+    min-width: 0;
+    padding: 0.65rem 0.75rem !important;
+  }
+
+  .header__titleblock strong {
+    font-size: 0.95rem;
+    line-height: 1.25;
+  }
+
+  .header__subtitle,
+  .content__titlemeta {
+    display: none;
+  }
+
+  .header .button {
+    box-sizing: border-box;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    padding: 0.5rem;
+  }
+
   .content {
-    padding-inline: 0.75rem;
+    box-sizing: border-box;
+    width: 100%;
+    margin-inline: 0;
+    padding-inline: 0.75rem !important;
+  }
+
+  .content__block {
+    width: 100%;
   }
 }

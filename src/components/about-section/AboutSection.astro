@@ -153,6 +153,7 @@ import Navbar from "../navbar/Navbar.astro";
     }
 
     .history_component {
+        box-sizing: border-box;
         position: relative;
         z-index: 1;
         display: flex;
@@ -337,6 +338,7 @@ import Navbar from "../navbar/Navbar.astro";
     }
 
     .context_component {
+        box-sizing: border-box;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -448,16 +450,52 @@ import Navbar from "../navbar/Navbar.astro";
 
     @media (max-width: 640px) {
         .history_component {
-            min-height: 680px;
-            padding: 2rem 1.25rem 4rem;
+            min-height: max(560px, calc(100svh - 150px));
+            padding: 2rem 1rem 3.5rem;
         }
 
         .history_component__tv {
+            max-width: 440px;
+            margin-bottom: 1.5rem;
+        }
+
+        .history_component__desc {
             margin-bottom: 2rem;
+            font-size: clamp(1.15rem, 5vw, 1.5rem);
+            line-height: 1.4;
+        }
+
+        .history_component__btn {
+            display: inline-flex;
+            align-items: center;
+            min-height: 44px;
+            font-size: 1.5rem;
+        }
+
+        .history_component__arrow-link {
+            display: grid;
+            place-items: center;
+            min-width: 44px;
+            min-height: 44px;
         }
 
         .context_component {
-            padding: 5rem 1.25rem;
+            padding: 4rem 1rem;
+        }
+
+        .context_component__icon {
+            width: 84px;
+            margin-bottom: 2rem;
+        }
+
+        .context_component__text {
+            margin-bottom: 1.5rem;
+            line-height: 1.65;
+        }
+
+        .context_component__clock {
+            width: 136px;
+            margin: 2rem auto;
         }
     }
 
