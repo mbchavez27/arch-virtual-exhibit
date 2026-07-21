@@ -6,53 +6,6 @@
 
 ---
 
-## References:
-
-National Geographic Society. (n.d.). Y2K bug. National Geographic. Retrieved July 7, 2026, from https://education.nationalgeographic.org/resource/Y2K-bug/
-(Note: Educational entries that are continually updated and lack a publication date require a retrieval date in APA 7. Some archived versions of this page list specific contributing educators [e.g., Rutledge, K., et al.], but citing the National Geographic Society as the corporate author is standard for their encyclopedia entries).
-
-Inventive HQ. (2025, February 20). Y2038 bug: Will your systems crash on January 19, 2038? https://inventivehq.com/blog/year-2038-problem-explained
-
-Vartak, S. (2026, April 2). The year 2038 problem: The next “Y2K” waiting to happen? Medium. https://medium.com/@shubhamvartak01/the-year-2038-problem-the-next-y2k-waiting-to-happen-2ba3fdc72ea5
-
----
-
-## Phase 0: Proposal
-
-**Status:** Complete
-
-### Summary
-
-- Defined theme: **The Y2K & Y2K38 Bug — A Journey Through Time and Storage Limits**
-- Researched technical background on Unix Epoch, 32-bit signed integers, and integer overflow
-- Proposed two interactive elements:
-    1. **Timeline Slider** — draggable timeline with industry impact animations at Y2K and Y2K38 crossings
-    2. **Unix Epoch Clock** — multi-format clock with fast-forward, overflow, and 64-bit upgrade features
-- Outlined tech stack (Astro, React, GSAP), color palette, typography, layout, and accessibility considerations
-- Created layout ideas and low-fidelity wireframes for all major screens
-
-### Wireframes
-
-![Begin Exploration](src/assets/phase0-proposal/Begin%20exploration%20-%20Low%20fidelity%20%5BDesktop%5D.png)
-_Begin Exploration — Entry point to the exhibit_
-
-![32-bit Timeline](src/assets/phase0-proposal/32-bit%20timeline%20-%20Low%20fidelity%20%5BDesktop%5D.png)
-_32-bit Timeline — Default timeline view_
-
-![32-bit Timeline Break](src/assets/phase0-proposal/32-bit%20timeline%20break%20-%20Low%20fidelity%20%5BDesktop%5D.png)
-_32-bit Timeline Break — Overflow failure state_
-
-![32-bit Timeline End](src/assets/phase0-proposal/32-bit%20timeline%20_%20end%20Low%20fidelity%20%5BDesktop%5D.png)
-_32-bit Timeline End — Terminal overflow state_
-
-![64-bit Timeline](src/assets/phase0-proposal/64-bit%20timeline%20-%20Low%20fidelity%20%5BDesktop%5D.png)
-_64-bit Timeline — Post-upgrade resolved state_
-
-![Explore 64-bit Timeline](src/assets/phase0-proposal/Explore%20another%20timeline%20%2864-bit%29%20-%20Low%20fidelity%20%5BDesktop%5D.png)
-_Explore 64-bit Timeline — Branching alternative timeline_
-
----
-
 ## Phase 1: Wireframing & Content Creation
 
 **Status:** Complete
@@ -193,3 +146,50 @@ _Title page — Entry screen for the exhibit_
 - Expanded to four-tier glitch system (teaser → full glitch → overflow → negative aftermath)
 - Used custom events for loose coupling between components
 - Applied CRT-style distortion via CSS filters and text shadows
+
+---
+
+## Phase 0: Proposal
+
+**Status:** Complete
+
+### Summary
+
+- Defined theme: **The Y2K & Y2K38 Bug — A Journey Through Time and Storage Limits**
+- Researched technical background on Unix Epoch, 32-bit signed integers, and integer overflow
+- Proposed two interactive elements:
+    1. **Timeline Slider** — draggable timeline with industry impact animations at Y2K and Y2K38 crossings
+    2. **Unix Epoch Clock** — multi-format clock with fast-forward, overflow, and 64-bit upgrade features
+- Outlined tech stack (Astro, React, GSAP), color palette, typography, layout, and accessibility considerations
+- Created layout ideas and low-fidelity wireframes for all major screens
+
+### Wireframes
+
+![Begin Exploration](src/assets/phase0-proposal/Begin%20exploration%20-%20Low%20fidelity%20%5BDesktop%5D.png)
+_Begin Exploration — Entry point to the exhibit_
+
+![32-bit Timeline](src/assets/phase0-proposal/32-bit%20timeline%20-%20Low%20fidelity%20%5BDesktop%5D.png)
+_32-bit Timeline — Default timeline view_
+
+![32-bit Timeline Break](src/assets/phase0-proposal/32-bit%20timeline%20break%20-%20Low%20fidelity%20%5BDesktop%5D.png)
+_32-bit Timeline Break — Overflow failure state_
+
+![32-bit Timeline End](src/assets/phase0-proposal/32-bit%20timeline%20_%20end%20Low%20fidelity%20%5BDesktop%5D.png)
+_32-bit Timeline End — Terminal overflow state_
+
+![64-bit Timeline](src/assets/phase0-proposal/64-bit%20timeline%20-%20Low%20fidelity%20%5BDesktop%5D.png)
+_64-bit Timeline — Post-upgrade resolved state_
+
+![Explore 64-bit Timeline](src/assets/phase0-proposal/Explore%20another%20timeline%20%2864-bit%29%20-%20Low%20fidelity%20%5BDesktop%5D.png)
+_Explore 64-bit Timeline — Branching alternative timeline_
+
+---
+
+## References:
+
+National Geographic Society. (n.d.). Y2K bug. National Geographic. Retrieved July 7, 2026, from https://education.nationalgeographic.org/resource/Y2K-bug/
+(Note: Educational entries that are continually updated and lack a publication date require a retrieval date in APA 7. Some archived versions of this page list specific contributing educators [e.g., Rutledge, K., et al.], but citing the National Geographic Society as the corporate author is standard for their encyclopedia entries).
+
+Inventive HQ. (2025, February 20). Y2038 bug: Will your systems crash on January 19, 2038? https://inventivehq.com/blog/year-2038-problem-explained
+
+Vartak, S. (2026, April 2). The year 2038 problem: The next “Y2K” waiting to happen? Medium. https://medium.com/@shubhamvartak01/the-year-2038-problem-the-next-y2k-waiting-to-happen-2ba3fdc72ea5
